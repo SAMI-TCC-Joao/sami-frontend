@@ -1,0 +1,36 @@
+.container{
+    display: flex;
+    background-color: '#F0F3FA';
+    justify-content: space-between;
+    height: 100vh;
+}
+
+.inputSide{
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    text-align: center;
+    justify-content: center;
+}
+
+.logoText{
+    font-family: 'Rubik';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 114px;
+    line-height: 135px;
+
+    color: #6D0088;
+}
+
+.text{
+    font-family: 'Rubik';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 28px;
+    text-align: center;
+
+    color: #6D0088;
+    margin-bottom: 5rem;
+}
