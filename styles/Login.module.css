@@ -5,6 +5,11 @@
     height: 100vh;
 }
 
+.sideImage {
+    height: 100%;
+    width: 50vw;
+}
+
 .inputSide{
     display: flex;
     flex-direction: column;
@@ -33,4 +38,15 @@
 
     color: #6D0088;
     margin-bottom: 5rem;
+}
+
+.submitButton{
+    align-self: center;
+    margin-top: 36px;
+    text-align: center;
+    width: 101px;
+    min-height: 36px;
+    border: 1px solid #6D0088;
+    border-radius: 16px;
+    color: #6D0088;
 }
