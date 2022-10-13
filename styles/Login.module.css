@@ -49,4 +49,11 @@
     border: 1px solid #6D0088;
     border-radius: 16px;
     color: #6D0088;
+    cursor: pointer;
+}
+
+.loginImg {
+    width: 50vw;
+    object-fit: cover;
+    object-position: top;
 }

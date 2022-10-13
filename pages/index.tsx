@@ -6,6 +6,7 @@ import { Input } from '../src/components/Input'
 import { userUpdate } from '../store/actions/users'
 import styles from '../styles/Login.module.css'
 import axios from 'axios'
+import { toast } from 'react-toastify'
 
 const Home: NextPage = () => {
   const dispatch = useDispatch();
@@ -19,21 +20,23 @@ const Home: NextPage = () => {
       email: user,
       password
     })
-    .then(function (response) {
+    .then((response) => {
       console.log(response);
-      dispatch(userUpdate(response))
+      dispatch(userUpdate(response?.data?.user))
     })
-    .catch(function (error) {
+    .catch((error) => {
+      
       console.error(error);
+      toast(error?.message)
     });
   }
 
   return (
     <div className={styles.container}>
-        <Image
+        <img
           src="/homeimg.svg"
           alt="Home img"
-          layout="fill"
+          className={styles.loginImg}
         />
       <div className={styles.inputSide}>
         <div className={styles.logoText}>
