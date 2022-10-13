@@ -1,15 +1,16 @@
-import { createStore } from "redux";
-import { createWrapper } from "next-redux-wrapper";
-import { composeWithDevTools } from "redux-devtools-extension/developmentOnly";
+import { configureStore } from '@reduxjs/toolkit'
 import reducers from "./reducers";
+import storage from 'redux-persist/lib/storage';
+import { persistReducer, persistStore } from 'redux-persist';
 
-const makeStore = () => {
-  // Create store
-  const store = createStore(reducers, composeWithDevTools());
+const persistConfig = {
+  key: 'root',
+  storage,
+}
 
-  // Return store
-  return store;
-};
+const persistedReducer = persistReducer(persistConfig, reducers)
+
+export const store = configureStore({reducer: persistedReducer});
 
 // export an assembled wrapper
-export const storeWrapper = createWrapper(makeStore, { debug: false });
+export const persistor = persistStore(store);
