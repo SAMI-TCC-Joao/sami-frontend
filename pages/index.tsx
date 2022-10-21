@@ -16,7 +16,7 @@ const Home: NextPage = () => {
   const [password, setPassword] = useState('')
 
   const login = () => {
-    axios.post('//localhost:3001/auth/login', {
+    axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
       email: user,
       password
     })
