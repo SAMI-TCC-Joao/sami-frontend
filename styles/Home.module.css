@@ -1,11 +1,9 @@
 .container {
-  background-color: "#F0F3FA";
   justify-content: space-between;
   height: 100vh;
 }
 
 .body {
-  background-color: #f0f3fa;
   height: 88vh;
 }
 

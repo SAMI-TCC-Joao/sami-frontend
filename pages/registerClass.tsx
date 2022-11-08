@@ -6,6 +6,9 @@ import type { UploadProps } from "antd";
 import { InputForms } from "../src/components/inputForms";
 import styles from "../styles/RegisterTeacher.module.css";
 import Upload from "antd/lib/upload/Upload";
+import useCRUD from "../src/components/hooks/useCRUD";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 
 const props: UploadProps = {
   name: "file",
@@ -26,16 +29,32 @@ const props: UploadProps = {
 };
 
 const RegisterClass: NextPage = () => {
-  return (
+  const router = useRouter();
+
+  const [classData, setClassData] = useState({});
+
+  const { data, handleCreate, handleUpdate, loading } = useCRUD({ model: 'subjectClass', immediatlyLoadData: true });
+
+  useEffect(() => {
+    if(!loading) {
+      setClassData(data);
+    }
+  },[data])
+
+  const registerNewClass = () => {
+    handleCreate({values: classData})
+  }
+
+  return loading ? (
     <div className={styles.container}>
       <Header />
       <div className={styles.titleForms}>Cadastro Turma</div>
       <div className={styles.pageContainer}>
         <div className={styles.formsContainer}>
-          <InputForms title="Nome" type="string" />
-          <InputForms title="Nome da disciplina" type="string" />
-          <InputForms title="Código da disciplina" type="string" />
-          <InputForms title="Semestre" type="string" />
+          <InputForms title="Nome" type="string" onChange={e => {setClassData(prev => ({...prev, name: e.target.value}))}}/>
+          <InputForms title="Nome da disciplina" type="string" onChange={e => {setClassData(prev => ({...prev, subjectName: e.target.value}))}}/>
+          <InputForms title="Código da disciplina" type="number" onChange={e => {setClassData(prev => ({...prev, subjectid: e.target.value}))}}/>
+          <InputForms title="Semestre" type="string" onChange={e => {setClassData(prev => ({...prev, semester: e.target.value}))}}/>
 
           <Upload {...props}>
             <Button className={styles.buttonUpload} icon={<UploadOutlined />}>
@@ -45,12 +64,12 @@ const RegisterClass: NextPage = () => {
         </div>
 
         <div className={styles.buttonDiv}>
-          <Button className={styles.buttonCancel}>Voltar</Button>
-          <Button className={styles.buttonRegister}>Cadastrar</Button>
+          <Button className={styles.buttonCancel} onClick={() => router.back()}>Voltar</Button>
+          <Button className={styles.buttonRegister} onClick={registerNewClass}>Cadastrar</Button>
         </div>
       </div>
     </div>
-  );
+  ) : null;
 };
 
 export default RegisterClass;
