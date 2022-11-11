@@ -7,11 +7,11 @@ import { appRoutes } from "../../../constants";
 
 const baseURL = process.env.NEXT_PUBLIC_API_URL;
 
-const useCRUD = ({ model, options, pathOptions, headerOptions = {}, initialLoadingState = true, immediatlyLoadData = false }) => {
+const useCRUD = ({ model = '', options = {}, pathOptions = '', headerOptions = {}, immediatlyLoadData = false }) => {
     const router = useRouter();
     const { user } = useSelector((state) => state)
     const { pathname } = router;
-    const [loading, setLoading] = useState(initialLoadingState);
+    const [loading, setLoading] = useState(immediatlyLoadData);
     const [data, setData] = useState(null);
 
     const headers = {
@@ -42,7 +42,7 @@ const useCRUD = ({ model, options, pathOptions, headerOptions = {}, initialLoadi
     
           // eslint-disable-next-line consistent-return
           return axios
-            .get(`${baseURL}/${model}${refetchPathOptions || pathOptions}`, {
+            .get(`${baseURL}/${model}/${refetchPathOptions || pathOptions}`, {
               params: refetchOptions || options,
               headers
             })
@@ -55,13 +55,12 @@ const useCRUD = ({ model, options, pathOptions, headerOptions = {}, initialLoadi
       );
 
       const handleCreate = useCallback(
-        ({ values = null, refetchOptions = null, refetchPathOptions = null, generateLoading = true, displayToast = true } = {}) => {
-
+        ({ values = {}, refetchOptions = null, refetchPathOptions = null, generateLoading = true, displayToast = true } = {}) => {
           if (generateLoading) setLoading(true);
     
           // eslint-disable-next-line consistent-return
           return axios
-            .post(`${baseURL}/${model}${refetchPathOptions || pathOptions}`, values, {
+            .post(`${baseURL}/${model}/${refetchPathOptions || pathOptions}`, values, {
               params: refetchOptions || options,
               headers
             })
@@ -74,7 +73,7 @@ const useCRUD = ({ model, options, pathOptions, headerOptions = {}, initialLoadi
       );
 
       const handleUpdate = useCallback(
-        ({ values = null, id = '', refetchOptions = null, refetchPathOptions = null, generateLoading = true, displayToast = true } = {}) => {
+        ({ values = {}, id = '', refetchOptions = null, refetchPathOptions = null, generateLoading = true, displayToast = true } = {}) => {
 
           if (generateLoading) setLoading(true);
     
@@ -93,7 +92,7 @@ const useCRUD = ({ model, options, pathOptions, headerOptions = {}, initialLoadi
       );
 
       const handleDelete = useCallback(
-        ({ values = null, id = '', refetchOptions = null, refetchPathOptions = null, generateLoading = true, displayToast = true } = {}) => {
+        ({ values = {}, id = '', refetchOptions = null, refetchPathOptions = null, generateLoading = true, displayToast = true } = {}) => {
 
           if (generateLoading) setLoading(true);
     
@@ -114,11 +113,11 @@ const useCRUD = ({ model, options, pathOptions, headerOptions = {}, initialLoadi
 
       useEffect(() => {
         if(immediatlyLoadData){
-          handleGet().then(_data => {
+          handleGet().then(({data: _data}) => {
             setData(_data);
           })
         }
-      }, [immediatlyLoadData]);
+      }, []);
 
       return {
         setLoading,
