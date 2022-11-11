@@ -55,7 +55,7 @@ const useCRUD = ({ model = '', options = {}, pathOptions = '', headerOptions = {
       );
 
       const handleCreate = useCallback(
-        ({ values = {}, refetchOptions = null, refetchPathOptions = null, generateLoading = true, displayToast = true } = {}) => {
+        ({ values, refetchOptions = null, refetchPathOptions = null, generateLoading = true, displayToast = true } = {}) => {
           if (generateLoading) setLoading(true);
     
           // eslint-disable-next-line consistent-return
@@ -73,7 +73,7 @@ const useCRUD = ({ model = '', options = {}, pathOptions = '', headerOptions = {
       );
 
       const handleUpdate = useCallback(
-        ({ values = {}, id = '', refetchOptions = null, refetchPathOptions = null, generateLoading = true, displayToast = true } = {}) => {
+        ({ values, id = '', refetchOptions = null, refetchPathOptions = null, generateLoading = true, displayToast = true } = {}) => {
 
           if (generateLoading) setLoading(true);
     
@@ -92,7 +92,7 @@ const useCRUD = ({ model = '', options = {}, pathOptions = '', headerOptions = {
       );
 
       const handleDelete = useCallback(
-        ({ values = {}, id = '', refetchOptions = null, refetchPathOptions = null, generateLoading = true, displayToast = true } = {}) => {
+        ({ values, id = '', refetchOptions = null, refetchPathOptions = null, generateLoading = true, displayToast = true } = {}) => {
 
           if (generateLoading) setLoading(true);
     
