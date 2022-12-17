@@ -4,6 +4,7 @@
 /node_modules
 /.pnp
 .pnp.js
+yarn.lock
 
 # testing
 /coverage
@@ -33,5 +34,8 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
+
+# Files
+/TODO.md
 
 package-lock.json
