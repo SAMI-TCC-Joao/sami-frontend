@@ -35,7 +35,7 @@ export function Header() {
   const onClick = (e: any) => {
     if (e.key) window.location.href = e.key;
   };
-
+  
   return (
     <div className={styles.header}>
       <Image
@@ -47,8 +47,8 @@ export function Header() {
       />
       <Space size={16} style={{ display: "flex", alignItems: "center" }}>
         {headerOptions[user?.userType]?.map(({ label, href }, index) => (
-          <Link key={index} className={styles.link} href={href}>
-            {label}
+          <Link key={index} className={styles.link} href={`${href}`}>
+            <a>{label}</a>
           </Link>
         ))}
         <Dropdown menu={{ items, onClick }} trigger={["click"]}>
