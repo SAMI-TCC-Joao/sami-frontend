@@ -63,9 +63,6 @@ const Login: NextPage = () => {
               })
                 .then(({ data }) => {
                   dispatch(formsUpdate(data));
-                })
-                .catch((err) => {
-                  console.log(err);
                 });
               dispatch(userUpdate(data));
               toast.success("Login realizado com sucesso", {

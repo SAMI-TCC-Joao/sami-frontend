@@ -52,25 +52,6 @@ const AllIndicators: NextPage = () => {
       <Header />
       <div className={styles.body}>
         <TitlePage title="Indicadores" isIndicator />
-        <div className={styles.filterDiv}>
-          <div className={styles.filterDivLeftSide}>
-            <FilterButton title="Tipos" />
-
-            <FilterButton title="Visualização" />
-
-            <FilterButton title="Data" />
-
-            <div className={styles.inputSearchDiv}>
-              <div className={styles.inputSearchTitle}>Nome:</div>
-              <Search
-                placeholder="Digite um nome..."
-                onSearch={() => {}}
-                className={styles.inputSearch}
-              />
-            </div>
-          </div>
-        </div>
-
         <div className={styles.cardsDiv}>
           {indicators?.map((indicator: any) => (
             <FormCard

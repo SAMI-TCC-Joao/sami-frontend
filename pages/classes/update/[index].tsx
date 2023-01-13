@@ -45,7 +45,6 @@ const UpdateClass: NextPage = () => {
       }
     })
     .then(({data}) => {
-      console.log(data)
       setClassData(data)
     })
     .catch((error: any) => {

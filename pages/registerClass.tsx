@@ -82,7 +82,6 @@ const RegisterClass: NextPage = () => {
           });
           return obj;
         });
-        console.log(data); // aqui so pra mostrar no console, pode tirar depois
         setTableData(data as ITableUser[]); // setar os dados no estado para serem usados quando o usuário clicar em salvar
       });
     } else if (info.file.status === "error") {
@@ -111,7 +110,6 @@ const RegisterClass: NextPage = () => {
 
         // se tiver dados, vai criar o usuário usando os dados do excel:
         for (let i = 0; i <= tableData.length; i++) {
-          console.log(tableData[i])
           handleCreateUser({
             values: { ...tableData[i], userType: "student" },
             header: {
@@ -135,7 +133,6 @@ const RegisterClass: NextPage = () => {
                     Authorization: `Bearer ${user.token}`,
                   },
                 }).then(({ data }) => {
-                  console.log(data)
                   handleRelationClass(data?.id); // aqui chama a função para criar a relação
                   return;
                 });
