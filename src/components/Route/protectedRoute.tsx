@@ -19,7 +19,12 @@ const ProtectedRoute = ({ router, children }: any) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const protectedRoutes = {
-    student: [appRoutes.logout, appRoutes.classes],
+    student: [
+      appRoutes.home,
+      appRoutes.logout,
+      appRoutes.classes,
+      appRoutes.response,
+    ],
     teacher: [
       appRoutes.home,
       appRoutes.logout,
@@ -32,17 +37,17 @@ const ProtectedRoute = ({ router, children }: any) => {
       appRoutes.updateForm,
       appRoutes.allIndicators,
       appRoutes.oneIndicator,
+      appRoutes.analysesIndicator,
     ],
     admin: [
       appRoutes.home,
-      appRoutes.registerClass,
       appRoutes.logout,
       appRoutes.registerTeacher,
       appRoutes.updateTeacher,
-      appRoutes.classes,
-      appRoutes.updateClass,
       appRoutes.recoverPassword,
       appRoutes.changePassword,
+      appRoutes.registerForm,
+      appRoutes.updateForm
     ],
     default: [
       appRoutes.login,

@@ -64,6 +64,10 @@
   padding: 0 1rem 2rem 1rem;
 }
 
+.tabs {
+  width: 100%;
+}
+
 .cardsDiv > div {
   margin: 1rem 2rem 0.5rem 1rem;
 }

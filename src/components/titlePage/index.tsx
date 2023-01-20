@@ -11,6 +11,9 @@ interface TitlePageProps {
   isIndicator?: boolean;
   isIndicatorEdit?: boolean;
   nameIndicator?: string;
+  isStudent?: boolean;
+  indicatorId?: string;
+  hideButton?: boolean;
   handleEditIndicator?: (e: any, name: string) => void;
   handleUpdateIndicator?: () => void;
 }
@@ -20,7 +23,10 @@ export function TitlePage({
   url,
   isIndicator,
   isIndicatorEdit,
+  isStudent,
   nameIndicator,
+  indicatorId,
+  hideButton,
   handleEditIndicator,
   handleUpdateIndicator,
 }: TitlePageProps) {
@@ -51,16 +57,28 @@ export function TitlePage({
             onChange={(e) => handleEditIndicator?.(e, "name")}
             placeholder="Nome do indicador"
           />
-          <p className={styles.details}>Ver detalhes e estatísticas</p>
+          <p
+            className={styles.details}
+            onClick={() =>
+              router.push(
+                appRoutes.analysesIndicator.replace(
+                  "[index]",
+                  indicatorId || ""
+                )
+              )
+            }
+          >
+            Ver detalhes e estatísticas
+          </p>
         </div>
       ) : (
-        <>{title}</>
+        <>{nameIndicator || title}</>
       )}
-      {isIndicatorEdit ? (
+      {hideButton ? null : isIndicatorEdit ? (
         <button className={styles.button} onClick={handleUpdateIndicator}>
           Editar
         </button>
-      ) : (
+      ) : isStudent ? null : (
         <button className={styles.button} onClick={() => handleCreate()}>
           Criar
         </button>

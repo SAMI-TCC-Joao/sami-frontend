@@ -1,27 +1,56 @@
 import { NextComponentType } from "next";
-import React, { Dispatch, useState } from "react";
+import React, { Dispatch, useEffect, useState } from "react";
 import { Modal, Typography, Button } from "antd";
+import useCRUD from "../../hooks/useCRUD";
+import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 interface Props {
   openModal: boolean;
   setOpenModal: Dispatch<boolean>;
+  dataIdParam: string;
+  afterDelete: () => void;
 }
 
-const DeleteClassModal = ({ openModal, setOpenModal }: Props) => {
-  const [confirmLoading, setConfirmLoading] = useState(false);
+const DeleteClassModal = ({ openModal, setOpenModal, dataIdParam, afterDelete }: Props) => {
+  const { user } = useSelector((state: any) => state);
+
+  const { handleDelete: handleDeleteClass } = useCRUD({
+    model: "classe",
+  });
 
   const handleCancel = () => {
     setOpenModal(false);
   };
 
-  const handleDelete = () => {};
+  const handleDelete = () => {
+    handleDeleteClass({
+      refetchPathOptions: dataIdParam,
+      header: {
+        Authorization: `Bearer ${user.token}`,
+      },
+    }).then(({ error }: any) => {
+      if (error) {
+        console.log(error);
+        toast.error("Error ao apagar turma da tabela", {
+          toastId: "deleteClass",
+        });
+        return;
+      }
+
+      afterDelete()
+      setOpenModal(false);
+      toast.success("Turma deletada do sistema!", {
+        toastId: "deleteClass",
+      });
+      return;
+    });
+  };
 
   return (
     <Modal
       title="Title"
       open={openModal}
-      onOk={handleDelete}
-      confirmLoading={confirmLoading}
       onCancel={handleCancel}
       footer={[
         <div
@@ -50,7 +79,7 @@ const DeleteClassModal = ({ openModal, setOpenModal }: Props) => {
       ]}
     >
       <Typography>
-        Tem certeza que deseja apagar a turma name da tabela?
+        Tem certeza que deseja apagar a turma da tabela do sistema?
       </Typography>
     </Modal>
   );

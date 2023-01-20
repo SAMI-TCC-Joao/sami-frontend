@@ -234,7 +234,7 @@ export function QuestionList({ formFields, setFormFields }: QuestionListProps) {
     setDragging(result.source.index);
   };
 
-  if (formFields.length === 0) {
+  if (formFields?.length === 0) {
     return (
       <div className={styles.newFormOptions}>
         <p>
@@ -251,14 +251,14 @@ export function QuestionList({ formFields, setFormFields }: QuestionListProps) {
 
   return (
     <div className={styles.questionList}>
-      <DragDropContext onDragEnd={handleOnDragEnd} onDragStart={handleStartDrag}>
+      <DragDropContext onDragEnd={handleOnDragEnd} onDragStart={handleStartDrag} >
         <Droppable droppableId="questions">
           {(provided) => (
             <div
               {...provided.droppableProps}
               ref={provided.innerRef}
             >
-              {formFields.map((field: any, index: number) => {
+              {formFields?.map((field: any, index: number) => {
                 switch (field.type) {
                   case "alternative":
                     return (

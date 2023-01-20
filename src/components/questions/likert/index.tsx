@@ -36,7 +36,10 @@ export function QuestionLikert({
     if (type === "columns") {
       const fieldLength = field.options.columns.length;
       const data = [...field.options.columns];
-      data.push({ value: `Coluna ${fieldLength + 1}` });
+      data.push({
+        id: uuidv4(),
+        value: `Coluna ${fieldLength + 1}`,
+      });
       handleQuestionLikertChange(indexLikert, data, type);
     } else {
       const fieldLength = field.options.lines.length;
@@ -44,7 +47,7 @@ export function QuestionLikert({
       data.push({
         id: uuidv4(),
         value: `Linha ${fieldLength + 1}`,
-        response: "",
+        response: "", // response será o id da coluna selecionada
       });
       handleQuestionLikertChange(indexLikert, data, type);
     }

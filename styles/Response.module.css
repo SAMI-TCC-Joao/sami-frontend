@@ -1,0 +1,49 @@
+.container {
+  justify-content: space-between;
+  height: 100vh;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  margin: 2rem 5rem 2rem 3rem;
+  padding: 2rem 1rem 1rem 4.5rem;
+}
+
+.headerForm {
+  padding: 0.5rem 1rem 2rem 2.5rem;
+  background-color: #ffffff;
+  width: 100%;
+  border-radius: 10px;
+  box-shadow: 4px 4px 4px 0 rgba(0, 0, 0, 0.25);
+}
+
+.headerFirstLine {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.description {
+  font-size: 15px;
+  font-weight: 400;
+}
+
+.footerForm {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+  padding: 1rem 5.6rem;
+}
+
+.footerButton {
+  border-radius: 50px;
+}

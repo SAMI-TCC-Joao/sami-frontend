@@ -7,41 +7,32 @@ import { Header } from "../../src/components/header";
 import { FilterButton } from "../../src/components/filterButton";
 import ClassesTable from "../../src/components/tables/classesTable";
 import DeleteClassModal from "../../src/components/modals/deleteClass";
+import BackPage from "../../src/components/backPages";
+import { useRouter } from "next/router";
+import { appRoutes } from "../../constants";
 
 const Classes: NextPage = () => {
+  const navigate = useRouter()
+
   const { enums } = useSelector((state: any) => state);
   const hasEnums = Object.keys(enums).length;
-
-  const [openModal, setOpenModal] = useState(false);
 
   return hasEnums ? (
     <div className={styles.container}>
       <Header />
 
       <div className={styles.body}>
+        <BackPage />
+
         <div className={styles.content}>
           <h1 className={styles.title}>Turmas</h1>
 
-          <button className={styles.button}>Criar</button>
-        </div>
-
-        <div className={styles.filterContainer}>
-          <div className={styles.filterLeftSide}>
-            <FilterButton title="Disciplina" />
-
-            <FilterButton title="Semestre" />
-          </div>
+          <button className={styles.button} onClick={() => navigate.push(appRoutes.registerClass)}>Criar</button>
         </div>
 
         <div className={styles.ContainerTable}>
-          <ClassesTable setOpenModal={setOpenModal} />
+          <ClassesTable />
         </div>
-
-        {openModal ? (
-          <DeleteClassModal openModal={openModal} setOpenModal={setOpenModal} />
-        ) : (
-          ""
-        )}
       </div>
     </div>
   ) : null;

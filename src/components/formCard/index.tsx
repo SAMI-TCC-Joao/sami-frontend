@@ -11,13 +11,23 @@ import { formsUpdate } from "../../../store/actions/forms";
 
 interface FormCardProps {
   title: string;
-  date: string;
+  date?: string;
+  dateRange?: string[];
   id: string;
   isIndicator?: boolean;
+  isEvaluation?: boolean;
   reloadInPage?: () => void;
 }
 
-export function FormCard({ title, date, id, isIndicator, reloadInPage }: FormCardProps) {
+export function FormCard({
+  title,
+  date,
+  dateRange,
+  id,
+  isIndicator,
+  isEvaluation,
+  reloadInPage,
+}: FormCardProps) {
   const [indicators, setIndicators] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [indicatorRelationModal, setIndicatorRelationModal] = useState("");
@@ -96,8 +106,7 @@ export function FormCard({ title, date, id, isIndicator, reloadInPage }: FormCar
           label: "Apagar",
           key: `${id}, delete`,
           danger: true,
-        },
-        { label: "Duplicar", key: `null3, duplicate` },
+        }
       ];
 
   const onClick = (e: any) => {
@@ -197,20 +206,35 @@ export function FormCard({ title, date, id, isIndicator, reloadInPage }: FormCar
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <div className={styles.title}>{title}</div>
-        <Dropdown
-          className={styles.dropdown}
-          menu={{ items, onClick }}
-          trigger={["click"]}
+        <div
+          className={isEvaluation ? styles.titleEvaluation : styles.title}
+          onClick={() => {
+            if (isEvaluation) {
+              router.push(appRoutes.response.replace("[index]", id));
+            }
+          }}
         >
-          <MoreOutlined
-            style={{ fontSize: "18px", color: "#0094FF", fontWeight: "bold" }}
-          />
-        </Dropdown>
+          {title}
+        </div>
+        {!isEvaluation ? (
+          <Dropdown
+            className={styles.dropdown}
+            menu={{ items, onClick }}
+            trigger={["click"]}
+          >
+            <MoreOutlined
+              style={{ fontSize: "18px", color: "#0094FF", fontWeight: "bold" }}
+            />
+          </Dropdown>
+        ) : null}
       </div>
       <div className={styles.footer}>
         <ClockCircleOutlined style={{ fontSize: "16px", color: "#868686" }} />
-        <div className={styles.date}>Criado em {date}</div>
+        <div className={styles.date}>
+          {isEvaluation
+            ? `Período: ${dateRange?.[0]} - ${dateRange?.[1]}`
+            : `Criado em ${date}`}
+        </div>
       </div>
       <Modal
         open={isModalOpen}
