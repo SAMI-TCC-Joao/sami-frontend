@@ -1,22 +1,16 @@
 import type { NextPage } from "next";
 import styles from "../../styles/indicators/all.module.css";
-import { FilterButton } from "../../src/components/filterButton";
-import { Input } from "antd";
 import { FormCard } from "../../src/components/formCard";
 import { Header } from "../../src/components/header";
 import React, { useEffect, useState } from "react";
 import Head from "next/head";
 import { useSelector } from "react-redux";
-import { useRouter } from "next/router";
 import { TitlePage } from "../../src/components/titlePage";
 import useCRUD from "../../src/components/hooks/useCRUD";
 import { toast } from "react-toastify";
 
 const AllIndicators: NextPage = () => {
   const { user } = useSelector((state: any) => state);
-  const router = useRouter();
-
-  const { Search } = Input;
 
   const { handleGet } = useCRUD({ model: "indicator" });
 

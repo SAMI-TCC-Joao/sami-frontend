@@ -1,15 +1,20 @@
 import { SearchOutlined } from "@ant-design/icons";
 import type { InputRef } from "antd";
 import { Button, Input, Space, Table } from "antd";
-import type { ColumnsType, ColumnType } from "antd/es/table";
+import type {
+  ColumnType,
+  ColumnsType,
+  TablePaginationConfig,
+} from "antd/es/table";
+import type { FilterValue, SorterResult } from "antd/es/table/interface";
 import type { FilterConfirmProps } from "antd/es/table/interface";
-import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import React, { Dispatch, useEffect, useRef, useState } from "react";
 import Highlighter from "react-highlight-words";
-import styles from "./styles.module.css";
-import MoreInfosTable from "../../dropdown";
-import useCRUD from "../../hooks/useCRUD";
 import { useSelector } from "react-redux";
-import { ITableClass } from "../../../types/interfaces";
+import MoreInfosTable from "../../dropdown/moreInfosTable";
+import useCRUD from "../../hooks/useCRUD";
+import styles from "./styles.module.css";
+import DeleteClassModal from "../../modals/deleteClass";
 
 interface DataType {
   id: string;
@@ -24,50 +29,87 @@ type DataIndex = keyof DataType;
 
 interface Props {
   setOpenModal: Dispatch<boolean>;
+  setDataIdParam: Dispatch<string>;
 }
 
-const ClassesTable = ({ setOpenModal }: Props) => {
+interface TableParams {
+  pagination?: TablePaginationConfig;
+  sortField?: string;
+  sortOrder?: string;
+  filters?: Record<string, FilterValue>;
+}
+
+const ClassesTable = () => {
   const [search, setSearch] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
-  const [classTableData, setClassTableData] = useState<DataType[]>([] as DataType[]);
+  const [classTableData, setClassTableData] = useState<DataType[]>(
+    [] as DataType[]
+  );
+  const [openModal, setOpenModal] = useState(false);
+  const [dataIdParam, setDataIdParam] = useState("");
+  const [tableParams, setTableParams] = useState<TableParams>({
+    pagination: {
+      current: 1,
+      pageSize: 10,
+    },
+  });
+
+  const getRandomuserParams = (params: TableParams) => ({
+    results: params.pagination?.pageSize,
+    page: params.pagination?.current,
+    ...params,
+  });
 
   const searchInput = useRef<InputRef>(null);
-  const { user } = useSelector((state: any) => state)
+  const { user } = useSelector((state: any) => state);
 
   const { handleGet: handleGetClasses } = useCRUD({
-    model: 'classe',
-  })
+    model: "classe",
+  });
 
   const classesData = async () => {
     handleGetClasses({
       refetchPathOptions: user.email,
       header: {
-        Authorization: `Bearer ${user.token}`
-      }
+        Authorization: `Bearer ${user.token}`,
+      },
     })
-    .then(({data}) => {
-      const tableData = data.map((info) => {
-        return {
-          id: info.id,
-          name: info.name,
-          students: info.UsersSubjectClasses.length,
-          semester: info.semester,
-          discipline: info.subjectName,
-          more: <MoreInfosTable setOpenModal={setOpenModal} idParam={info.id} />,
-        }
+      .then(({ data }) => {
+        const tableData = data.map((info) => {
+          return {
+            id: info.id,
+            name: info.name,
+            students: info.UsersSubjectClasses.length,
+            semester: info.semester,
+            discipline: info.subjectName,
+            more: (
+              <MoreInfosTable
+                setOpenModal={setOpenModal}
+                idParam={info.id}
+                setDataIdParam={setDataIdParam}
+              />
+            ),
+          };
+        });
+        setClassTableData(tableData);
+        setTableParams({
+          ...tableParams,
+          pagination: {
+            ...tableParams.pagination,
+            total: 500,
+          },
+        });
+        return;
       })
-      setClassTableData(tableData)
-      return 
-    })
-    .catch((error: any) => {
-      console.error(`Message error: ${error}`)
-      return
-    })
-  }
+      .catch((error: any) => {
+        console.error(`Message error: ${error}`);
+        return;
+      });
+  };
 
   useEffect(() => {
-    classesData()
-  }, [])
+    classesData();
+  }, [JSON.stringify(tableParams)]);
 
   const handleSearch = (
     selectedKeys: string[],
@@ -170,54 +212,86 @@ const ClassesTable = ({ setOpenModal }: Props) => {
 
   const columns: ColumnsType<DataType> = [
     {
+      title: "Disciplina",
+      dataIndex: "discipline",
+      key: "discipline",
+      ...getColumnsSearchProps("discipline"),
+      sortDirections: ["ascend", "descend"],
+      sorter: {
+        compare: (a, b) => a.discipline.length - b.discipline.length,
+        multiple: 4,
+      },
+      align: "left",
+      width: 140,
+    },
+    {
       title: "Turma",
       dataIndex: "name",
       key: "name",
       ...getColumnsSearchProps("name"),
-      sorter: (a, b) => a.name.length - b.name.length,
       sortDirections: ["ascend", "descend"],
-      align: 'center',
-      width: 160
+      sorter: {
+        compare: (a, b) => a.name.length - b.name.length,
+        multiple: 2,
+      },
+      align: "left",
+      width: 110,
     },
     {
-      title: "Alunos",
-      dataIndex: "students",
-      key: "students",
-      ...getColumnsSearchProps("students"),
-      sorter: (a, b) => a.students - b.students,
-      sortDirections: ["ascend", "descend"],
-      align: 'center',
-      width: 160
-    },
-    {
-      title: "Semestres",
+      title: "Semestre",
       dataIndex: "semester",
       key: "semester",
       ...getColumnsSearchProps("semester"),
-      sorter: (a, b) => a.semester.length - b.semester.length,
       sortDirections: ["ascend", "descend"],
-      align: 'center',
-      width: 160
+      sorter: {
+        compare: (a, b) => a.semester.length - b.semester.length,
+        multiple: 1,
+      },
+      align: "left",
+      width: 110,
     },
     {
-      title: "Disciplinas",
-      dataIndex: "discipline",
-      key: "discipline",
-      ...getColumnsSearchProps("discipline"),
-      sorter: (a, b) => a.discipline.length - b.discipline.length,
+      title: "Qtd. de Alunos",
+      dataIndex: "students",
+      key: "students",
+      ...getColumnsSearchProps("students"),
       sortDirections: ["ascend", "descend"],
-      align: 'center',
-      width: 200
+      sorter: {
+        compare: (a, b) => a.students - b.students,
+        multiple: 3,
+      },
+      align: "left",
+      width: 80,
     },
     {
       title: "",
       dataIndex: "more",
       key: "more",
-      width: 20
+      align: "center",
+      width: 10,
     },
   ];
 
-  return <Table size={"middle"} className={styles.Table} columns={columns} dataSource={classTableData} />;
+  return (
+    <>
+      <Table
+        size={"middle"}
+        className={styles.Table}
+        columns={columns}
+        dataSource={classTableData}
+      />
+      {openModal && dataIdParam !== undefined ? (
+        <DeleteClassModal
+          openModal={openModal}
+          setOpenModal={setOpenModal}
+          dataIdParam={dataIdParam}
+          afterDelete={classesData}
+        />
+      ) : (
+        ""
+      )}
+    </>
+  );
 };
 
 export default ClassesTable;

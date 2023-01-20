@@ -1,11 +1,11 @@
 import type { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import styles from "../../../styles/indicators/one.module.css";
 import { Header } from "../../../src/components/header";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Head from "next/head";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/router";
-import { Select } from "antd";
+import { Button, Divider, Input, InputRef, Select } from "antd";
 import TextareaAutosize from "react-textarea-autosize";
 import { toast } from "react-toastify";
 import useCRUD from "../../../src/components/hooks/useCRUD";
@@ -37,8 +37,13 @@ const OneIndicator: NextPage = () => {
   });
   const { handleGet: handleGetGroups } = useCRUD({ model: "group" });
 
+  const [nameGroup, setNameGroup] = useState("");
+  const [nameMethodology, setNameMethodology] = useState("");
+
   const { user } = useSelector((state: any) => state);
   const router = useRouter();
+
+  const inputRef = useRef<InputRef>(null);
 
   const [indicator, setIndicator] = useState({
     id: "",
@@ -49,8 +54,13 @@ const OneIndicator: NextPage = () => {
     groupId: "",
     userId: "",
   });
-  const [methodologies, setMethodologies] = useState([]);
-  const [groups, setGroups] = useState([]);
+  const [methodologies, setMethodologies] = useState([] as any);
+  const [groups, setGroups] = useState([] as any);
+
+  const { handleCreate: handleCreateGroup } = useCRUD({ model: "group" });
+  const { handleCreate: handleCreateMethodology } = useCRUD({
+    model: "methodology",
+  });
 
   useEffect(() => {
     if (!router.isReady || !router.query.index) return;
@@ -110,6 +120,8 @@ const OneIndicator: NextPage = () => {
     });
   }, [router.query.index]);
 
+  console.log(indicator)
+
   const submit = () => {
     handleUpdate({
       values: indicator,
@@ -133,6 +145,86 @@ const OneIndicator: NextPage = () => {
     });
   };
 
+  const onNameChange = (event: any, type: string) => {
+    if (type === "group") {
+    setNameGroup(event.target.value);
+    } else {
+      setNameMethodology(event.target.value);
+    }
+  };
+
+  const addItem = (e: any, type: string) => {
+    e.preventDefault();
+
+    if (type === "group" && !nameGroup) {
+      return toast.error("Nome do grupo é obrigatório", {
+        toastId: "error-group",
+      });
+    }
+
+    if (type === "methodology" && !nameMethodology) {
+      return toast.error("Nome da metodologia é obrigatório", {
+        toastId: "error-methodology",
+      });
+    }
+
+    if (type === "group") {
+      handleCreateGroup({
+        header: {
+          Authorization: `Bearer ${user.token}`,
+        },
+        values: {
+          label: nameGroup,
+        },
+      }).then(({ data, error }) => {
+        if (error) {
+          return toast.error("Erro ao criar grupo", {
+            toastId: "error",
+          });
+        }
+
+        setGroups([
+          ...groups,
+          {
+            value: data.id,
+            label: data.label,
+          },
+        ]);
+      });
+      setNameGroup("");
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 0);
+    } else {
+      handleCreateMethodology({
+        header: {
+          Authorization: `Bearer ${user.token}`,
+        },
+        values: {
+          label: nameMethodology,
+        },
+      }).then(({ data, error }) => {
+        if (error) {
+          return toast.error("Erro ao criar metodologia", {
+            toastId: "error",
+          });
+        }
+
+        setMethodologies([
+          ...methodologies,
+          {
+            value: data.id,
+            label: data.label,
+          },
+        ]);
+      });
+      setNameMethodology("");
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 0);
+    }
+  };
+
   return (
     <div className={styles.container}>
       <Head>
@@ -146,12 +238,14 @@ const OneIndicator: NextPage = () => {
         nameIndicator={indicator.name}
         handleEditIndicator={handleEditIndicator}
         handleUpdateIndicator={submit}
+        indicatorId={indicator.id}
       />
       <div className={styles.body}>
         <div className={styles.selectContainer}>
           <div className={styles.selectDiv}>
             <p className={styles.inputName}>Metodologia:</p>
             <Select
+              showSearch
               onChange={(value) => {
                 setIndicator({ ...indicator, methodologyId: value });
               }}
@@ -159,11 +253,37 @@ const OneIndicator: NextPage = () => {
               value={indicator.methodologyId || "Selecione o conjunto"}
               className={styles.select}
               size="large"
+              filterOption={(input, option) =>
+                (`${option?.label ?? ''}`).toLowerCase().includes(input.toLowerCase())
+              }
+              dropdownRender={(menu) => (
+                <>
+                  {menu}
+                  <Divider style={{ margin: "8px 0" }} />
+                  <div>
+                    <Input
+                      placeholder="Nome da nova metodologia"
+                      ref={inputRef}
+                      value={nameMethodology}
+                      onChange={(e) => onNameChange(e, "methodology")}
+                      style={{ width: "100%" }}
+                    />
+                    <Button
+                      type="primary"
+                      onClick={(e) => addItem(e, "methodology")}
+                      style={{ width: "100%", marginTop: 8 }}
+                    >
+                      Adicionar item
+                    </Button>
+                  </div>
+                </>
+              )}
             />
           </div>
           <div className={styles.selectDiv}>
             <p className={styles.inputName}>Grupo:</p>
             <Select
+              showSearch
               onChange={(value) => {
                 setIndicator({ ...indicator, groupId: value });
               }}
@@ -171,6 +291,30 @@ const OneIndicator: NextPage = () => {
               value={indicator.groupId || "Selecione o conjunto"}
               className={styles.select}
               size="large"
+              filterOption={(input, option) =>
+                (`${option?.label ?? ''}`).toLowerCase().includes(input.toLowerCase())
+              }
+              dropdownRender={(menu) => (
+                <>
+                  {menu}
+                  <Divider style={{ margin: "8px 0" }} />
+                  <div>
+                    <Input
+                      placeholder="Nome do novo conjunto"
+                      ref={inputRef}
+                      value={nameGroup}
+                      onChange={(e) => onNameChange(e, "group")}
+                    />
+                    <Button
+                      type="primary"
+                      onClick={(e) => addItem(e, "group")}
+                      style={{ width: "100%", marginTop: 8 }}
+                    >
+                      Adicionar item
+                    </Button>
+                  </div>
+                </>
+              )}
             />
           </div>
         </div>

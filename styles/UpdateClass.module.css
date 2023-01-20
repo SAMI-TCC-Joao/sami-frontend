@@ -53,7 +53,9 @@
 }
 
 .addStudentsBtn {
-  padding: 1rem 1.5rem;
+  width: 100%;
+  text-align: center;
+  padding: 1rem;
   height: auto;
   background-color: #bbb;
   border: transparent;

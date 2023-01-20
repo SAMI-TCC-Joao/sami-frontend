@@ -1,8 +1,6 @@
 import { Button, Radio } from "antd";
 import React from "react";
 import styles from "./styles.module.css";
-import TextareaAutosize from "react-textarea-autosize";
-
 interface QuestionTextProps {
   field: any;
   index: number;
@@ -51,15 +49,6 @@ export function QuestionText({
           />
           {field.mandatory && <p className={styles.required}>*</p>}
         </div>
-
-        <TextareaAutosize
-          name="textResponse"
-          placeholder="Escreva aqui"
-          value={field.options?.textResponse}
-          onChange={(event) => handleQuestionTextChange(index, event)}
-          className={styles.textArea}
-          disabled
-        />
       </div>
       <div>
         {field.image && (

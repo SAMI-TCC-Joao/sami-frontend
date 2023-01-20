@@ -86,6 +86,7 @@ const RegisterForm: NextPage = () => {
       <div className={styles.body}>
         <div className={styles.headerForm}>
           <div className={styles.headerFirstLine}>
+            <div className={styles.requiredInputContainer}>
             <input
               className={styles.headerInput}
               type="text"
@@ -98,6 +99,8 @@ const RegisterForm: NextPage = () => {
                 });
               }}
             />
+            <p className={styles.required}>*</p>
+            </div>
             <Space direction="horizontal">
               <p>Ordem aleatória:</p>
               <Switch
@@ -114,6 +117,7 @@ const RegisterForm: NextPage = () => {
               />
             </Space>
           </div>
+          <div className={styles.requiredInputContainer}>
           <TextareaAutosize
             placeholder="Descrição do formulário"
             value={formHeader.description}
@@ -125,6 +129,8 @@ const RegisterForm: NextPage = () => {
               });
             }}
           />
+          <p className={styles.required}>*</p>
+          </div>
         </div>
         <QuestionList formFields={formFields} setFormFields={setFormFields} />
       </div>

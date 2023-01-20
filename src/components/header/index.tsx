@@ -23,15 +23,13 @@ export function Header() {
       { label: "Turmas", href: appRoutes.classes },
     ],
     [userType?.admin?.value]: [
-      { label: "Cadastrar template", href: appRoutes.registerClass },
       { label: "Cadastrar professor", href: appRoutes.registerTeacher },
-      { label: "Templates", href: appRoutes.registerClass },
+      { label: "Templates", href: appRoutes.home },
     ],
   };
 
   const items = [
-    { label: "Perfil", key: appRoutes.home }, // profile depois
-    { label: "Sair", key: appRoutes.logout },
+    { label: "Sair", key: appRoutes.logout }
   ];
 
   const onClick = (e: any) => {
@@ -50,7 +48,7 @@ export function Header() {
       />
       <Space size={16} style={{ display: "flex", alignItems: "center" }}>
         {headerOptions[user?.userType]?.map(({ label, href }, index) => (
-          <Link key={index} className={styles.link} href={href || ""}>
+          <Link key={index} className={styles.link} href={href}>
             {label}
           </Link>
         ))}

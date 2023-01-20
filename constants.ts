@@ -15,6 +15,8 @@ const appRoutes = {
   updateForm: "/forms/update/[index]",
   allIndicators: "/indicators/all",
   oneIndicator: "/indicators/one/[index]",
+  analysesIndicator: "/indicators/analyses/[index]",
+  response: "/response/[index]",
 };
 
 export { appRoutes };

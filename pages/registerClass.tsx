@@ -14,6 +14,7 @@ import React from "react";
 import Head from "next/head";
 import { useSelector } from "react-redux";
 import { ITableUser } from "../src/types/interfaces";
+import { appRoutes } from "../constants";
 
 const formFields = [
   { title: "Nome", type: "string", key: "name" },
@@ -24,7 +25,7 @@ const formFields = [
 
 const RegisterClass: NextPage = () => {
   const { user } = useSelector((state: any) => state);
-  const [tableData, setTableData] = useState<ITableUser[]>([] as ITableUser[]);
+  const [tableData, setTableData] = useState<ITableUser[]>({} as ITableUser[]);
   const router = useRouter();
   const { id } = router.query;
   const [classData, setClassData] = useState({});
@@ -82,7 +83,15 @@ const RegisterClass: NextPage = () => {
           });
           return obj;
         });
-        setTableData(data as ITableUser[]); // setar os dados no estado para serem usados quando o usuário clicar em salvar
+        if (data !== undefined) {
+           setTableData(data.map((info) => {
+            return {
+              email: info.email,
+              name: info.name,
+              registration: String(info.registration)
+            }
+           }))// setar os dados no estado para serem usados quando o usuário clicar em salvar
+        }
       });
     } else if (info.file.status === "error") {
       // se der erro, mostrar uma mensagem de erro:
@@ -109,42 +118,56 @@ const RegisterClass: NextPage = () => {
         }
 
         // se tiver dados, vai criar o usuário usando os dados do excel:
-        for (let i = 0; i <= tableData.length; i++) {
+        for (let i = 0; i < tableData.length; i++) {
           handleCreateUser({
             values: { ...tableData[i], userType: "student" },
             header: {
               Authorization: `Bearer ${user.token}`,
             },
           }) // aqui que chama para criar o usuário
-            .then(({ data, error }) => {
+            .then(({ data, error }: any) => {
               // aqui vai criar a relação entre a turma e o usuário (usei uma função pq pode ser chamada no erro ou no sucesso):
               const handleRelationClass = async (userId: string) => {
                 await handleCreateRelationClass({
                   values: { subjectClassId: dataClass.id, userId },
-                });
+                })
+                .then(({error}: any) => {
+                  if (error) {
+                    console.error(error)
+                    return
+                  }
+
+                  router.push(appRoutes.classes)
+                })
               };
-              
-              console.log(error?.message)
+
               if (error?.message === "Usuário já cadastrado") {
                 // vai entrar aq se o usuário já estiver cadastrado, então tera que pegar o id dele e adicionar na turma
                 handleGetUser({
                   refetchPathOptions: `${tableData[i].email}`,
                   header: {
                     Authorization: `Bearer ${user.token}`,
-                  },
-                }).then(({ data }) => {
-                  handleRelationClass(data?.id); // aqui chama a função para criar a relação
+                  },  
+                }).then(({ data, error }: any) => {
+                  if (error) {
+                    console.log(error)
+                    toast.error("Error ao localizar o usuário", {
+                      toastId: "getUser",
+                    });
+                    return;
+                  }
+
+                  handleRelationClass(data.id); // aqui chama a função para criar a relação
                   return;
                 });
               }
-
+              
               if (error) {
-                console.log('Erro: ' + error)
                 console.log(error); // aqui vai mostrar o erro no console, se o erro n for o de usuário já cadastrado
                 return;
               }
 
-              handleRelationClass(data?.id); // aqui chama a função para criar a relação
+              handleRelationClass(data.id); // aqui chama a função para criar a relação
               return;
             });
         }
