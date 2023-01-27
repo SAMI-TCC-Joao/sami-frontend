@@ -35,22 +35,18 @@ const RegisterClass: NextPage = () => {
     handleCreate: handleCreateClass,
     loading,
   } = useCRUD({
-    // para criar uma nova turma
     model: "classe",
   });
 
   const { handleCreate: handleCreateUser } = useCRUD({
-    // para criar o usuário
     model: "user",
   });
 
   const { handleGet: handleGetUser } = useCRUD({
-    // para pegar o usuário
     model: "user",
   });
 
   const { handleCreate: handleCreateRelationClass } = useCRUD({
-    // para criar a relação entre a turma e o usuário
     model: "classes-relation",
   });
 
@@ -74,12 +70,11 @@ const RegisterClass: NextPage = () => {
       });
 
       readXlsxFile(info.file.originFileObj).then((rows) => {
-        const dataShift = rows.shift() as string[]; // remover a primeira linha com os nomes das colunas
-        // mapear os dados para um objeto:
+        const dataShift = rows.shift() as string[];
         const data = rows.map((row) => {
-          const obj = {}; // criar um objeto vazio
+          const obj = {};
           row.forEach((item, index) => {
-            obj[dataShift[index]] = item; // adicionar os dados no objeto
+            obj[dataShift[index]] = item;
           });
           return obj;
         });
@@ -90,11 +85,10 @@ const RegisterClass: NextPage = () => {
               name: info.name,
               registration: String(info.registration)
             }
-           }))// setar os dados no estado para serem usados quando o usuário clicar em salvar
+           }))
         }
       });
     } else if (info.file.status === "error") {
-      // se der erro, mostrar uma mensagem de erro:
       toast.error("Erro ao carregar arquivo", {
         toastId: "uploadError",
       });
@@ -107,26 +101,22 @@ const RegisterClass: NextPage = () => {
       header: {
         Authorization: `Bearer ${user.token}`,
       },
-    }) // aqui vai criar a turma usando os valores do classData e o id do usuário logado
-      // se der certo, vai chamar a função abaixo:
+    })
       .then(({ data: dataClass }) => {
-        // se não tiver dados, vai mostrar uma mensagem de erro:
         if (!dataClass) {
           toast.error("Erro ao criar turma", {
             toastId: "createClass",
           });
         }
 
-        // se tiver dados, vai criar o usuário usando os dados do excel:
         for (let i = 0; i < tableData.length; i++) {
           handleCreateUser({
             values: { ...tableData[i], userType: "student" },
             header: {
               Authorization: `Bearer ${user.token}`,
             },
-          }) // aqui que chama para criar o usuário
+          })
             .then(({ data, error }: any) => {
-              // aqui vai criar a relação entre a turma e o usuário (usei uma função pq pode ser chamada no erro ou no sucesso):
               const handleRelationClass = async (userId: string) => {
                 await handleCreateRelationClass({
                   values: { subjectClassId: dataClass.id, userId },
@@ -142,7 +132,6 @@ const RegisterClass: NextPage = () => {
               };
 
               if (error?.message === "Usuário já cadastrado") {
-                // vai entrar aq se o usuário já estiver cadastrado, então tera que pegar o id dele e adicionar na turma
                 handleGetUser({
                   refetchPathOptions: `${tableData[i].email}`,
                   header: {
@@ -150,24 +139,23 @@ const RegisterClass: NextPage = () => {
                   },  
                 }).then(({ data, error }: any) => {
                   if (error) {
-                    console.log(error)
                     toast.error("Error ao localizar o usuário", {
                       toastId: "getUser",
                     });
                     return;
                   }
 
-                  handleRelationClass(data.id); // aqui chama a função para criar a relação
+                  handleRelationClass(data.id);
                   return;
                 });
               }
               
               if (error) {
-                console.log(error); // aqui vai mostrar o erro no console, se o erro n for o de usuário já cadastrado
+                console.log(error);
                 return;
               }
 
-              handleRelationClass(data.id); // aqui chama a função para criar a relação
+              handleRelationClass(data.id);
               return;
             });
         }

@@ -29,7 +29,6 @@ const RemoveStudentModal = ({ openModal, setOpenModal, userDataId }: Props) => {
       },
     }).then(({data, error}: any) => {
       if (error) {
-        console.log(error);
         toast.error("Error ao remover o aluno da turma!", {
           toastId: "deleteUsersSubjectClasses",
         });
@@ -40,7 +39,6 @@ const RemoveStudentModal = ({ openModal, setOpenModal, userDataId }: Props) => {
       toast.success("Aluno(a) removido da turma!", {
         toastId: "deleteUsersSubjectClasses",
       });
-      console.log(data)
       return;
     })
   }

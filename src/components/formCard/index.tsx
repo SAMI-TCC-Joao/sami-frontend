@@ -16,6 +16,7 @@ interface FormCardProps {
   id: string;
   isIndicator?: boolean;
   isEvaluation?: boolean;
+  isTemplate?: boolean;
   reloadInPage?: () => void;
 }
 
@@ -26,6 +27,7 @@ export function FormCard({
   id,
   isIndicator,
   isEvaluation,
+  isTemplate,
   reloadInPage,
 }: FormCardProps) {
   const [indicators, setIndicators] = useState([]);
@@ -53,7 +55,6 @@ export function FormCard({
       header: {
         Authorization: `Bearer ${user.token}`,
       },
-      refetchPathOptions: `${user.email}`,
     }).then(({ data, error }) => {
       if (error) {
         return toast.error("Erro ao carregar indicadores", {
@@ -70,7 +71,6 @@ export function FormCard({
       header: {
         Authorization: `Bearer ${user.token}`,
       },
-      refetchPathOptions: `${user.email}`,
     }).then(({ data, error }) => {
       if (error) {
         toast.error("Erro ao buscar formulários");
@@ -93,6 +93,13 @@ export function FormCard({
         },
         { label: "Apagar", key: `${id}, delete`, danger: true },
       ]
+    : isTemplate
+    ? [
+        {
+          label: "Adicionar à indicador",
+          key: `${id}, add`,
+        },
+      ]
     : [
         {
           label: "Editar",
@@ -106,7 +113,7 @@ export function FormCard({
           label: "Apagar",
           key: `${id}, delete`,
           danger: true,
-        }
+        },
       ];
 
   const onClick = (e: any) => {

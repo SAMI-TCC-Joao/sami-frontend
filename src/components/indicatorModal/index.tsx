@@ -200,7 +200,6 @@ export function IndicatorModal({
       header: {
         Authorization: `Bearer ${user.token}`,
       },
-      refetchPathOptions: `${user.email}`,
     }).then(({ data, error }) => {
       if (error) {
         return toast.error("Erro ao carregar grupos", {
@@ -222,7 +221,6 @@ export function IndicatorModal({
       header: {
         Authorization: `Bearer ${user.token}`,
       },
-      refetchPathOptions: `${user.email}`,
     }).then(({ data, error }) => {
       if (error) {
         return toast.error("Erro ao carregar metodologias", {

@@ -21,7 +21,6 @@ const AllIndicators: NextPage = () => {
       header: {
         Authorization: `Bearer ${user.token}`,
       },
-      refetchPathOptions: `${user.email}`,
     }).then(({ data, error }) => {
       if (error) {
         return toast.error("Erro ao carregar indicadores", {

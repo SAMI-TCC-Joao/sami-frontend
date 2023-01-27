@@ -61,6 +61,57 @@ const Response: NextPage = () => {
   }, [router.isReady, router.query.index]);
 
   const submit = () => {
+    const verifyMandatory = evaluation.form.questions.map(
+      (question: any) => {
+        if (!question.mandatory) {
+          return;
+        }
+
+        if (question.type === "text" && question.options.textResponse !== "") {
+          return;
+        }
+
+        if (question.type === "alternative") {
+          const selectedAlternative = question.options.alternatives.find(
+            (alternative: any) => alternative.correct
+          );
+
+          if (selectedAlternative) {
+            return;
+          }
+        }
+
+        if (question.type === "likert") {
+          const selectedLikert = question.options.lines.find(
+            (likert: any) => likert.value === ""
+          );
+
+          if (!selectedLikert) {
+            return;
+          }
+        }
+
+        if (question.type === "multipleChoice") {
+          const selectedMultipleChoice = question.options.alternatives.find(
+            (alternative: any) => alternative.correct
+          );
+
+          if (selectedMultipleChoice) {
+            return;
+          }
+        }
+
+        return "error";
+      }
+    );
+
+    if (verifyMandatory.includes("error")) {
+      toast.error("Preencha todas as questões obrigatórias", {
+        toastId: "error-mandatory-questions",
+      });
+      return;
+    }
+
     handleCreateResponse({
       header: {
         Authorization: `Bearer ${user.token}`,
@@ -95,18 +146,16 @@ const Response: NextPage = () => {
       </Head>
       <Header />
       <div className={styles.body}>
-
-      <div className={styles.headerForm}>
-        {evaluation.form?.name && (
-          <h1 className={styles.title}>{evaluation.form.name}</h1>
-        )}
-        {evaluation.form?.description && (
-          <p className={styles.description}>{evaluation.form.description}</p>
-        )}
-      </div>
+        <div className={styles.headerForm}>
+          {evaluation.form?.name && (
+            <h1 className={styles.title}>{evaluation.form.name}</h1>
+          )}
+          {evaluation.form?.description && (
+            <p className={styles.description}>{evaluation.form.description}</p>
+          )}
+        </div>
       </div>
       <QuestionResponse evaluation={evaluation} setEvaluation={setEvaluation} />
-
       <div className={styles.footerForm}>
         <Button onClick={submit} type="primary" className={styles.footerButton}>
           Enviar respostas

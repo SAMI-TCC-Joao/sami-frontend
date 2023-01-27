@@ -69,7 +69,6 @@ const ClassesTable = () => {
 
   const classesData = async () => {
     handleGetClasses({
-      refetchPathOptions: user.email,
       header: {
         Authorization: `Bearer ${user.token}`,
       },

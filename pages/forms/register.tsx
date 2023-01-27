@@ -63,7 +63,6 @@ const RegisterForm: NextPage = () => {
         header: {
           Authorization: `Bearer ${user.token}`,
         },
-        refetchPathOptions: `${user.email}`,
       }).then(({ data, error }) => {
         if (error) {
           toast.error("Erro ao buscar formulário");
