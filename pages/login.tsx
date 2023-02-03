@@ -47,7 +47,6 @@ const Login: NextPage = () => {
           console.log(error);
           return toast.error("Credenciais inválidas ou usuário não cadastrado");
         }
-        console.log(data)
         if (data.login) {
           handleGet({
             header: {
@@ -59,7 +58,6 @@ const Login: NextPage = () => {
                 header: {
                   Authorization: `Bearer ${data.token}`,
                 },
-                refetchPathOptions: `${data.email}`,
               }).then(({ data, error }) => {
                 if (!error) {
                   dispatch(formsUpdate(data));
@@ -103,7 +101,11 @@ const Login: NextPage = () => {
       </Head>
       <img src="/loginImage.svg" alt="Home img" className={styles.loginImg} />
 
-      <div className={styles.inputSide}>
+      <form className={styles.inputSide}
+        onSubmit={(e) => {
+          e.preventDefault();
+        }}
+      >
         <div className={styles.logoText}>SAMI</div>
         <div className={styles.text}>
           Sistema para análise de métricas e <br /> indicadores de aprendizagem
@@ -126,6 +128,8 @@ const Login: NextPage = () => {
           <input
             className={loginErrors.password ? styles.inputError : styles.input}
             type="password"
+            // fazer login quando apertar enter
+            
             {...loginRegister("password")}
           />
           {loginErrors.password && (
@@ -146,7 +150,7 @@ const Login: NextPage = () => {
         >
           Esqueceu sua senha
         </span>
-      </div>
+      </form>
     </div>
   );
 };

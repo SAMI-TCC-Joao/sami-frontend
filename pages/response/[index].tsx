@@ -37,6 +37,9 @@ const Response: NextPage = () => {
   const { handleGet: handleGetEvaluation } = useCRUD({
     model: "evaluation/one",
   });
+  const { handleGet: handleGetForm } = useCRUD({
+    model: "form/one",
+  });
   const { handleCreate: handleCreateResponse } = useCRUD({
     model: "response",
   });
@@ -44,23 +47,95 @@ const Response: NextPage = () => {
   useEffect(() => {
     if (!router.isReady || !router.query.index) return;
 
-    handleGetEvaluation({
-      header: {
-        Authorization: `Bearer ${user.token}`,
-      },
-      refetchPathOptions: `${router.query.index}?withForm=true`,
-    }).then(({ data, error }) => {
-      if (error) {
-        toast.error("Erro ao carregar formulário", {
-          toastId: "error-load-form",
-        });
-      } else {
-        setEvaluation(data);
-      }
-    });
+    if (router.query.teacher) {
+      handleGetForm({
+        header: {
+          Authorization: `Bearer ${user.token}`,
+        },
+        refetchPathOptions: `${router.query.index}?withForm=true`,
+      }).then(({ data, error }) => {
+        if (error) {
+          toast.error("Erro ao carregar formulário", {
+            toastId: "error-load-form",
+          });
+        } else {
+          setEvaluation({ form: data });
+        }
+      });
+    } else {
+      handleGetEvaluation({
+        header: {
+          Authorization: `Bearer ${user.token}`,
+        },
+        refetchPathOptions: `${router.query.index}?withForm=true`,
+      }).then(({ data, error }) => {
+        if (error) {
+          toast.error("Erro ao carregar formulário", {
+            toastId: "error-load-form",
+          });
+        } else {
+          if (data.form.random) {
+            data.form.questions = data.form.questions.sort(() =>
+              Math.random() > 0.5 ? 1 : -1
+            );
+          }
+
+          setEvaluation(data);
+        }
+      });
+    }
   }, [router.isReady, router.query.index]);
 
   const submit = () => {
+    const verifyMandatory = evaluation.form.questions.map((question: any) => {
+      if (!question.mandatory) {
+        return;
+      }
+
+      if (question.type === "text" && question.options.textResponse !== "") {
+        return;
+      }
+
+      if (question.type === "alternative") {
+        const selectedAlternative = question.options.alternatives.find(
+          (alternative: any) => alternative.correct
+        );
+
+        if (selectedAlternative) {
+          return;
+        }
+      }
+
+      if (question.type === "likert") {
+        const selectedLikert = question.options.lines.find(
+          (likert: any) => likert.value === ""
+        );
+
+        if (!selectedLikert) {
+          return;
+        }
+      }
+
+      if (question.type === "multipleChoice") {
+        const selectedMultipleChoice = question.options.alternatives.find(
+          (alternative: any) => alternative.correct
+        );
+
+        if (selectedMultipleChoice) {
+          return;
+        }
+      }
+
+      return "error";
+    });
+
+    if (verifyMandatory.includes("error")) {
+      toast.error("Preencha todas as questões obrigatórias", {
+        toastId: "error-mandatory-questions",
+      });
+      return;
+    }
+
     handleCreateResponse({
       header: {
         Authorization: `Bearer ${user.token}`,
@@ -95,21 +170,31 @@ const Response: NextPage = () => {
       </Head>
       <Header />
       <div className={styles.body}>
-
-      <div className={styles.headerForm}>
-        {evaluation.form?.name && (
-          <h1 className={styles.title}>{evaluation.form.name}</h1>
-        )}
-        {evaluation.form?.description && (
-          <p className={styles.description}>{evaluation.form.description}</p>
-        )}
+        <div className={styles.headerForm}>
+          {evaluation.form?.name && (
+            <h1 className={styles.title}>{evaluation.form.name}</h1>
+          )}
+          {evaluation.form?.description && (
+            <p className={styles.description}>{evaluation.form.description}</p>
+          )}
+        </div>
       </div>
-      </div>
-      <QuestionResponse evaluation={evaluation} setEvaluation={setEvaluation} />
-
+      <QuestionResponse
+        evaluation={evaluation}
+        setEvaluation={setEvaluation}
+        isTeacher={!!router.query.teacher}
+      />
       <div className={styles.footerForm}>
-        <Button onClick={submit} type="primary" className={styles.footerButton}>
-          Enviar respostas
+        <Button
+          onClick={
+            router.query.teacher
+              ? () => router.back()
+              : submit
+          }
+          type="primary"
+          className={styles.footerButton}
+        >
+          {router.query.teacher ? "voltar" : "Responder"}
         </Button>
       </div>
     </div>

@@ -38,6 +38,7 @@ const ProtectedRoute = ({ router, children }: any) => {
       appRoutes.allIndicators,
       appRoutes.oneIndicator,
       appRoutes.analysesIndicator,
+      appRoutes.response,
     ],
     admin: [
       appRoutes.home,
@@ -47,7 +48,8 @@ const ProtectedRoute = ({ router, children }: any) => {
       appRoutes.recoverPassword,
       appRoutes.changePassword,
       appRoutes.registerForm,
-      appRoutes.updateForm
+      appRoutes.updateForm,
+      appRoutes.response,
     ],
     default: [
       appRoutes.login,
@@ -108,7 +110,7 @@ const ProtectedRoute = ({ router, children }: any) => {
   if (isLoading) {
     if (
       !user.id &&
-      protectedRoutes.default.includes(router.pathname) //validar se o redux de 'null' é null mesmo
+      protectedRoutes.default.includes(router.pathname)
     ) {
       return children;
     }

@@ -26,6 +26,9 @@ const Home: NextPage = () => {
   });
 
   useEffect(() => {
+    if (user?.userType === "student") {
+      return;
+    }
     getTemplateForms().then(({ data }) => {
       setTemplateForms(data);
     });
@@ -42,6 +45,7 @@ const Home: NextPage = () => {
               id={form.id}
               title={form.name}
               date={`${new Date(form.createdAt).toLocaleDateString()}`}
+              isTeacher
             />
           ))
         : "Nenhum cadastrado",
@@ -56,6 +60,8 @@ const Home: NextPage = () => {
               id={form.id}
               title={form.name}
               date={`${new Date(form.createdAt).toLocaleDateString()}`}
+              isTemplate
+              isTeacher
             />
           ))
         : "Nenhum cadastrado",
@@ -63,7 +69,7 @@ const Home: NextPage = () => {
   ];
 
   const { handleGet: handleGetEvaluation } = useCRUD({
-    model: "evaluation/all",
+    model: "evaluation/student",
   });
 
   useEffect(() => {
@@ -72,7 +78,6 @@ const Home: NextPage = () => {
         header: {
           Authorization: `Bearer ${user.token}`,
         },
-        refetchPathOptions: `${user.email}`,
       }).then(({ data, error }) => {
         if (error) {
           return toast.error("Erro ao carregar avaliações", {

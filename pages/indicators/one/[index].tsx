@@ -82,7 +82,6 @@ const OneIndicator: NextPage = () => {
       header: {
         Authorization: `Bearer ${user.token}`,
       },
-      refetchPathOptions: user.email,
     }).then(({ data, error }) => {
       if (error) {
         toast.error("Erro ao buscar metodologias");
@@ -103,7 +102,6 @@ const OneIndicator: NextPage = () => {
       header: {
         Authorization: `Bearer ${user.token}`,
       },
-      refetchPathOptions: user.email,
     }).then(({ data, error }) => {
       if (error) {
         toast.error("Erro ao buscar grupos");
@@ -119,8 +117,6 @@ const OneIndicator: NextPage = () => {
       setGroups(dataFormatted);
     });
   }, [router.query.index]);
-
-  console.log(indicator)
 
   const submit = () => {
     handleUpdate({

@@ -75,7 +75,6 @@ const RegisterTeacher: NextPage = () => {
         toast.error("Erro ao registrar professor!", {
           toastId: "errorRegisterTeacher",
         });
-        console.log(error);
         return;
       }
       toast.success("Professor registrado com sucesso!", {

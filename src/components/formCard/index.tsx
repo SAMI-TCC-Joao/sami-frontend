@@ -16,6 +16,8 @@ interface FormCardProps {
   id: string;
   isIndicator?: boolean;
   isEvaluation?: boolean;
+  isTemplate?: boolean;
+  isTeacher?: boolean;
   reloadInPage?: () => void;
 }
 
@@ -26,6 +28,8 @@ export function FormCard({
   id,
   isIndicator,
   isEvaluation,
+  isTemplate,
+  isTeacher,
   reloadInPage,
 }: FormCardProps) {
   const [indicators, setIndicators] = useState([]);
@@ -53,7 +57,6 @@ export function FormCard({
       header: {
         Authorization: `Bearer ${user.token}`,
       },
-      refetchPathOptions: `${user.email}`,
     }).then(({ data, error }) => {
       if (error) {
         return toast.error("Erro ao carregar indicadores", {
@@ -70,7 +73,6 @@ export function FormCard({
       header: {
         Authorization: `Bearer ${user.token}`,
       },
-      refetchPathOptions: `${user.email}`,
     }).then(({ data, error }) => {
       if (error) {
         toast.error("Erro ao buscar formulários");
@@ -93,7 +95,28 @@ export function FormCard({
         },
         { label: "Apagar", key: `${id}, delete`, danger: true },
       ]
+    : isTemplate
+    ? [
+        {
+          label: "Adicionar à indicador",
+          key: `${id}, add`,
+        },
+        {
+          label: "Visualizar",
+          key: `${appRoutes.response.replace(
+            "[index]",
+            `${id}${isTeacher ? `?teacher=true` : ``}`
+          )}, edit`,
+        },
+      ]
     : [
+        {
+          label: "Visualizar",
+          key: `${appRoutes.response.replace(
+            "[index]",
+            `${id}${isTeacher ? `?teacher=true` : ``}`
+          )}, edit`,
+        },
         {
           label: "Editar",
           key: `${appRoutes.updateForm.replace("[index]", id)}, edit`,
@@ -106,7 +129,7 @@ export function FormCard({
           label: "Apagar",
           key: `${id}, delete`,
           danger: true,
-        }
+        },
       ];
 
   const onClick = (e: any) => {
@@ -207,10 +230,17 @@ export function FormCard({
     <div className={styles.container}>
       <div className={styles.header}>
         <div
-          className={isEvaluation ? styles.titleEvaluation : styles.title}
+          className={
+            isEvaluation || isTeacher ? styles.titleEvaluation : styles.title
+          }
           onClick={() => {
-            if (isEvaluation) {
-              router.push(appRoutes.response.replace("[index]", id));
+            if (isEvaluation || isTeacher) {
+              router.push(
+                appRoutes.response.replace(
+                  "[index]",
+                  `${id}${isTeacher ? `?teacher=true` : ``}`
+                )
+              );
             }
           }}
         >

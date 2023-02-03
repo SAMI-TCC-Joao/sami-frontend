@@ -31,7 +31,6 @@ const DeleteClassModal = ({ openModal, setOpenModal, dataIdParam, afterDelete }:
       },
     }).then(({ error }: any) => {
       if (error) {
-        console.log(error);
         toast.error("Error ao apagar turma da tabela", {
           toastId: "deleteClass",
         });

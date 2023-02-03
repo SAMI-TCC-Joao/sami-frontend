@@ -104,7 +104,6 @@ const UpdateForm: NextPage = () => {
         header: {
           Authorization: `Bearer ${user.token}`,
         },
-        refetchPathOptions: `${user.email}`,
       }).then(({ data, error }) => {
         if (error) {
           toast.error("Erro ao buscar formulário");
@@ -113,10 +112,12 @@ const UpdateForm: NextPage = () => {
         }
         dispatch(formsUpdate(data));
         if (router.query?.indicator) {
-          router.push(appRoutes.oneIndicator.replace(
-            "[index]",
-            router.query?.indicator as string
-          ));
+          router.push(
+            appRoutes.oneIndicator.replace(
+              "[index]",
+              router.query?.indicator as string
+            )
+          );
           return;
         }
         router.push(appRoutes.home);
@@ -137,18 +138,21 @@ const UpdateForm: NextPage = () => {
       <div className={styles.body}>
         <div className={styles.headerForm}>
           <div className={styles.headerFirstLine}>
-            <input
-              className={styles.headerInput}
-              type="text"
-              placeholder="Título do formulário"
-              value={formHeader.title}
-              onChange={(e) => {
-                setFormHeader({
-                  ...formHeader,
-                  title: e.target.value,
-                });
-              }}
-            />
+            <div className={styles.requiredInputContainer}>
+              <input
+                className={styles.headerInput}
+                type="text"
+                placeholder="Título do formulário"
+                value={formHeader.title}
+                onChange={(e) => {
+                  setFormHeader({
+                    ...formHeader,
+                    title: e.target.value,
+                  });
+                }}
+              />
+              <p className={styles.required}>*</p>
+            </div>
             <Space direction="horizontal">
               <p>Ordem aleatória:</p>
               <Switch
@@ -165,17 +169,20 @@ const UpdateForm: NextPage = () => {
               />
             </Space>
           </div>
-          <TextareaAutosize
-            placeholder="Descrição do formulário"
-            className={styles.headerTextArea}
-            value={formHeader.description}
-            onChange={(e) => {
-              setFormHeader({
-                ...formHeader,
-                description: e.target.value,
-              });
-            }}
-          />
+          <div className={styles.requiredInputContainer}>
+            <TextareaAutosize
+              placeholder="Descrição do formulário"
+              value={formHeader.description}
+              className={styles.headerTextArea}
+              onChange={(e) => {
+                setFormHeader({
+                  ...formHeader,
+                  description: e.target.value,
+                });
+              }}
+            />
+            <p className={styles.required}>*</p>
+          </div>
         </div>
         <QuestionList formFields={formFields} setFormFields={setFormFields} />
       </div>

@@ -11,7 +11,7 @@
 
 .headerQuestion {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
 }
 
 .required {
@@ -42,7 +42,6 @@
   border: none;
   border-radius: 8px;
   font-size: 20px;
-  width: 20rem;
 }
 
 .body {

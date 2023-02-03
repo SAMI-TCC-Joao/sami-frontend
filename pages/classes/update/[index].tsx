@@ -15,7 +15,6 @@ import { toast } from "react-toastify";
 import StudentsTable from "../../../src/components/tables/studentsTable";
 import RemoveStudentModal from "../../../src/components/modals/removeStudent";
 import { ITableUser } from "../../../src/types/interfaces";
-import { info } from "console";
 
 export const getStaticPaths: GetStaticPaths = () => {
   return {
@@ -91,14 +90,12 @@ const UpdateClass: NextPage = () => {
       },
     }).then(({ data, error }: any) => {
       if (error) {
-        console.log(error);
         toast.error("Error ao puxar os dados da turma", {
           toastId: "getClass",
         });
         return;
       }
 
-      console.log(data);
       setClassData({
         id: data.id,
         name: data.name,
@@ -123,7 +120,6 @@ const UpdateClass: NextPage = () => {
   }, [classData]);
 
   const onUploadFile = (info) => {
-    console.log(info);
 
     if (info.file.status === "done") {
       if (info.file.name.split(".")[1] !== "xlsx") {
@@ -138,16 +134,16 @@ const UpdateClass: NextPage = () => {
       });
 
       readXlsxFile(info.file.originFileObj).then((rows) => {
-        const dataShift = rows.shift() as string[]; // remover a primeira linha com os nomes das colunas
-        // mapear os dados para um objeto:
+        const dataShift = rows.shift() as string[];
+
         const data = rows.map((row) => {
-          const obj = {}; // criar um objeto vazio
+          const obj = {};
           row.forEach((item, index) => {
-            obj[dataShift[index]] = item; // adicionar os dados no objeto
+            obj[dataShift[index]] = item;
           });
           return obj;
         });
-        console.log(data); // aqui so pra mostrar no console, pode tirar depois
+
         if (data !== undefined) {
           setTableData(
             data.map((info) => {
@@ -163,7 +159,6 @@ const UpdateClass: NextPage = () => {
       });
     }
     if (info.file.status === "error") {
-      // se der erro, mostrar uma mensagem de erro:
       toast.error("Erro ao carregar arquivo", {
         toastId: "uploadError",
       });
@@ -172,7 +167,6 @@ const UpdateClass: NextPage = () => {
 
   const createNewUsersRelation = () => {
     for (let i = 0; i < tableData.length; i++) {
-      console.log(tableData[i]);
 
       handleCreateUser({
         values: { ...tableData[i], userType: "student" },
@@ -194,7 +188,6 @@ const UpdateClass: NextPage = () => {
             },
           }).then(({ data, error }: any) => {
             if (error) {
-              console.log(error);
               toast.error("Error ao localizar o usuário", {
                 toastId: "getUser",
               });
@@ -232,7 +225,6 @@ const UpdateClass: NextPage = () => {
         });
       }
 
-      console.log(data);
       toast.success("Turma atualizada com sucesso", {
         toastId: "updateClass",
       });

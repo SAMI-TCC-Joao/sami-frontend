@@ -35,7 +35,7 @@ const useCRUD = ({ model = '', options = {}, pathOptions = '', headerOptions = {
       }, []);
 
     const handleGet = useCallback(
-        ({ refetchOptions = null, refetchPathOptions = '', generateLoading = true, displayToast = true, header } = {}) => {
+        ({ refetchOptions = null, refetchPathOptions = '', generateLoading = true, displayToast = true, header = {} } = {}) => {
 
           if (generateLoading) setLoading(true);
           if (!header) header = headers;
