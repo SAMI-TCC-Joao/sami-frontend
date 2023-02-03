@@ -99,7 +99,7 @@ const ChangePassword = () => {
               {changePasswordErrors.password?.message}
             </p>
           )}
-        </div>
+        </div> 
         <div className={styled.divInput}>
           <div className={styled.inputText}>Nova senha:</div>
           <input
