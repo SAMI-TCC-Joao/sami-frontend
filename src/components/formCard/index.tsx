@@ -17,6 +17,7 @@ interface FormCardProps {
   isIndicator?: boolean;
   isEvaluation?: boolean;
   isTemplate?: boolean;
+  isTeacher?: boolean;
   reloadInPage?: () => void;
 }
 
@@ -28,6 +29,7 @@ export function FormCard({
   isIndicator,
   isEvaluation,
   isTemplate,
+  isTeacher,
   reloadInPage,
 }: FormCardProps) {
   const [indicators, setIndicators] = useState([]);
@@ -99,8 +101,22 @@ export function FormCard({
           label: "Adicionar à indicador",
           key: `${id}, add`,
         },
+        {
+          label: "Visualizar",
+          key: `${appRoutes.response.replace(
+            "[index]",
+            `${id}${isTeacher ? `?teacher=true` : ``}`
+          )}, edit`,
+        },
       ]
     : [
+        {
+          label: "Visualizar",
+          key: `${appRoutes.response.replace(
+            "[index]",
+            `${id}${isTeacher ? `?teacher=true` : ``}`
+          )}, edit`,
+        },
         {
           label: "Editar",
           key: `${appRoutes.updateForm.replace("[index]", id)}, edit`,
@@ -214,10 +230,17 @@ export function FormCard({
     <div className={styles.container}>
       <div className={styles.header}>
         <div
-          className={isEvaluation ? styles.titleEvaluation : styles.title}
+          className={
+            isEvaluation || isTeacher ? styles.titleEvaluation : styles.title
+          }
           onClick={() => {
-            if (isEvaluation) {
-              router.push(appRoutes.response.replace("[index]", id));
+            if (isEvaluation || isTeacher) {
+              router.push(
+                appRoutes.response.replace(
+                  "[index]",
+                  `${id}${isTeacher ? `?teacher=true` : ``}`
+                )
+              );
             }
           }}
         >

@@ -48,7 +48,7 @@ export function Header() {
       />
       <Space size={16} style={{ display: "flex", alignItems: "center" }}>
         {headerOptions[user?.userType]?.map(({ label, href }, index) => (
-          <Link key={index} className={styles.link} href={href}>
+          <Link key={index} className={styles.link} href={`${href}`}>
             {label}
           </Link>
         ))}

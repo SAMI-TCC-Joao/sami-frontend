@@ -45,6 +45,7 @@ const Home: NextPage = () => {
               id={form.id}
               title={form.name}
               date={`${new Date(form.createdAt).toLocaleDateString()}`}
+              isTeacher
             />
           ))
         : "Nenhum cadastrado",
@@ -60,6 +61,7 @@ const Home: NextPage = () => {
               title={form.name}
               date={`${new Date(form.createdAt).toLocaleDateString()}`}
               isTemplate
+              isTeacher
             />
           ))
         : "Nenhum cadastrado",

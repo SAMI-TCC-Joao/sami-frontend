@@ -6,12 +6,14 @@ interface ResponseLikertProps {
   field: any;
   indexQuestion: number;
   handleQuestionChange: (index: number, question: any) => void;
+  isTeacher?: boolean;
 }
 
 export function ResponseLikert({
   field,
   indexQuestion,
   handleQuestionChange,
+  isTeacher,
 }: ResponseLikertProps) {
   const checkAlternative = (column: any, indexLine: number) => {
     let data = { ...field.options };
@@ -75,6 +77,7 @@ export function ResponseLikert({
                             <Radio
                               className={styles.likertBody}
                               checked={row.response === column.id}
+                              disabled={isTeacher}
                               onChange={(event) =>
                                 checkAlternative(column, indexLine)
                               }

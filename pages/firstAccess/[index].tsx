@@ -86,7 +86,7 @@ const ChangePassword = () => {
         <h1 className={styled.title}>Primeiro acesso, altere a senha</h1>
 
         <div className={styled.divInput}>
-          <div className={styled.inputText}>Senha:</div>
+          <div className={styled.inputText}>Senha antiga:</div>
           <input
             className={
               changePasswordErrors.password ? styled.inputError : styled.input

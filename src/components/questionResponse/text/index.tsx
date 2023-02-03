@@ -7,12 +7,14 @@ interface ResponseTextProps {
   field: any;
   indexQuestion: number;
   handleQuestionTextChange: (index: number, event: any) => void;
+  isTeacher?: boolean;
 }
 
 export function ResponseText({
   field,
   indexQuestion,
   handleQuestionTextChange,
+  isTeacher,
 }: ResponseTextProps) {
 
   return (
@@ -30,6 +32,7 @@ export function ResponseText({
           value={field.options?.textResponse}
           onChange={(event) => handleQuestionTextChange(indexQuestion, event)}
           className={styles.textArea}
+          disabled={isTeacher}
         />
         </div>
       </div>
