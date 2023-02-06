@@ -8,9 +8,10 @@ import { ResponseLikert } from "./likert";
 interface QuestionResponseProps {
   evaluation: any;
   setEvaluation: (evaluation: any) => void;
+  isTeacher?: boolean;
 }
 
-export function QuestionResponse({ evaluation, setEvaluation }: QuestionResponseProps) {
+export function QuestionResponse({ evaluation, setEvaluation, isTeacher }: QuestionResponseProps) {
 
   const handleQuestionChange = (index: number, data: any) => {
     // alternatives, likert e multipleChoice
@@ -36,6 +37,7 @@ export function QuestionResponse({ evaluation, setEvaluation }: QuestionResponse
                 field={question}
                 indexQuestion={index}
                 handleQuestionChange={handleQuestionChange}
+                isTeacher={isTeacher}
               />
             );
           case "text":
@@ -44,6 +46,7 @@ export function QuestionResponse({ evaluation, setEvaluation }: QuestionResponse
                 field={question}
                 indexQuestion={index}
                 handleQuestionTextChange={handleQuestionTextChange}
+                isTeacher={isTeacher}
               />
               );
           case "likert":
@@ -52,6 +55,7 @@ export function QuestionResponse({ evaluation, setEvaluation }: QuestionResponse
                 field={question}
                 indexQuestion={index}
                 handleQuestionChange={handleQuestionChange}
+                isTeacher={isTeacher}
               />
             );
           case "multipleChoice":
@@ -60,6 +64,7 @@ export function QuestionResponse({ evaluation, setEvaluation }: QuestionResponse
                 field={question}
                 indexQuestion={index}
                 handleQuestionChange={handleQuestionChange}
+                isTeacher={isTeacher}
               />
             );
           default:

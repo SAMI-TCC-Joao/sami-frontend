@@ -6,12 +6,14 @@ interface ResponseMultipleChoiceProps {
   field: any;
   indexQuestion: number;
   handleQuestionChange: (index: number, question: any) => void;
+  isTeacher?: boolean;
 }
 
 export function ResponseMultipleChoice({
   field,
   indexQuestion,
   handleQuestionChange,
+  isTeacher,
 }: ResponseMultipleChoiceProps) {
   const checkAlternative = (index2: number, event: any) => {
     let data = [...field.options.alternatives];
@@ -35,6 +37,7 @@ export function ResponseMultipleChoice({
                   key={indexAlternative}
                   className={styles.alternativeBody}
                   checked={alternative.correct}
+                  disabled={isTeacher}
                   onChange={(event) =>
                     checkAlternative(indexAlternative, event)
                   }

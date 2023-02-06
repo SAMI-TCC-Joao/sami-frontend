@@ -6,12 +6,14 @@ interface ResponseAlternativeProps {
   field: any;
   indexQuestion: number;
   handleQuestionChange: (index: number, question: any) => void;
+  isTeacher?: boolean;
 }
 
 export function ResponseAlternative({
   field,
   indexQuestion,
   handleQuestionChange,
+  isTeacher,
 }: ResponseAlternativeProps) {
   const checkAlternative = (index2: number, event: any) => {
     let data = [...field.options.alternatives];
@@ -39,6 +41,7 @@ export function ResponseAlternative({
                   onChange={(event) =>
                     checkAlternative(indexAlternative, event)
                   }
+                  disabled={isTeacher}
                 >
                   {alternative.value}
                 </Radio>
