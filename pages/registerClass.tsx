@@ -1,6 +1,7 @@
 import type { NextPage } from "next";
 import { UploadOutlined } from "@ant-design/icons";
 import readXlsxFile from "read-excel-file";
+import useDownloader from "react-use-downloader";
 import { Header } from "../src/components/header";
 import { Button } from "antd";
 import { InputForms } from "../src/components/inputForms";
@@ -29,6 +30,8 @@ const RegisterClass: NextPage = () => {
   const router = useRouter();
   const { id } = router.query;
   const [classData, setClassData] = useState({});
+
+  const { download } = useDownloader();
 
   const {
     data,
@@ -82,8 +85,8 @@ const RegisterClass: NextPage = () => {
            setTableData(data.map((info) => {
             return {
               email: info.email,
-              name: info.name,
-              registration: String(info.registration)
+              name: info.name || info.nome,
+              registration: String(info.registration || info.matricula)
             }
            }))
         }
@@ -194,6 +197,7 @@ const RegisterClass: NextPage = () => {
             );
           })}
           <span>(Apenas arquivos xlsx)</span>
+          <button onClick={() => download("/exemplo.xlsx", "exemplo.xlsx")} >Exemplo</button>
           <Upload
             onChange={onUploadFile}
             accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"

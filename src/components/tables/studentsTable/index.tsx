@@ -185,7 +185,7 @@ const StudentsTable = ({ students, setOpenModal, setUserDataId }: Props) => {
       width: 85,
     },
     {
-      title: "Registro",
+      title: "Matrícula",
       dataIndex: "registration",
       key: "registration",
       ...getColumnsSearchProps("registration"),
