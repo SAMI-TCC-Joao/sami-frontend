@@ -196,8 +196,14 @@ const RegisterClass: NextPage = () => {
               />
             );
           })}
+          <div className={styles.xlsxDiv}>
           <span>(Apenas arquivos xlsx)</span>
-          <button onClick={() => download("/exemplo.xlsx", "exemplo.xlsx")} >Exemplo</button>
+          <Button 
+            className={styles.xlsxButton} 
+            onClick={() => download("/exemplo.xlsx", "exemplo.xlsx")} 
+          >
+            Baixar exemplo
+          </Button>
           <Upload
             onChange={onUploadFile}
             accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -210,6 +216,7 @@ const RegisterClass: NextPage = () => {
               Alunos
             </Button>
           </Upload>
+          </div>
         </div>
 
         <div className={styles.buttonDiv}>
