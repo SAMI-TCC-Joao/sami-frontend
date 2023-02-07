@@ -81,7 +81,6 @@
 }
 
 .buttonUpload {
-  margin-top: 1rem;
   cursor: pointer;
   background: grey;
   border-radius: 10px;
@@ -105,6 +104,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
   gap: 8px;
 }
 

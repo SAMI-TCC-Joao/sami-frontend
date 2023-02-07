@@ -60,7 +60,6 @@ const RegisterClass: NextPage = () => {
   }, [data]);
 
   const onUploadFile = (info) => {
-    console.log("teste", info)
     if (info.file.status === "done") {
       if (info.file.name.split(".")[1] !== "xlsx") {
         toast.error("Arquivo inválido", {
@@ -84,7 +83,6 @@ const RegisterClass: NextPage = () => {
         });
         if (data !== undefined) {
            setTableData(data.map((info) => {
-            console.log({info})
             return {
               email: info.email,
               name: info.name || info.nome,
