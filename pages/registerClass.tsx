@@ -85,8 +85,8 @@ const RegisterClass: NextPage = () => {
             data.map((info: any) => {
               return {
                 email: info.email,
-                name: info.name,
-                registration: String(info.registration),
+                name: info.name || info.nome,
+                registration: String(info.registration || info.matricula),
               };
             })
           );
