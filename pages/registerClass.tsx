@@ -28,7 +28,6 @@ const RegisterClass: NextPage = () => {
   const { user } = useSelector((state: any) => state);
   const [tableData, setTableData] = useState<ITableUser[]>({} as ITableUser[]);
   const router = useRouter();
-  const { id } = router.query;
   const [classData, setClassData] = useState({});
 
   const { download } = useDownloader();
@@ -59,7 +58,7 @@ const RegisterClass: NextPage = () => {
     }
   }, [data]);
 
-  const onUploadFile = (info) => {
+  const onUploadFile = (info: any) => {
     if (info.file.status === "done") {
       if (info.file.name.split(".")[1] !== "xlsx") {
         toast.error("Arquivo inválido", {
@@ -82,13 +81,15 @@ const RegisterClass: NextPage = () => {
           return obj;
         });
         if (data !== undefined) {
-           setTableData(data.map((info) => {
-            return {
-              email: info.email,
-              name: info.name || info.nome,
-              registration: String(info.registration || info.matricula)
-            }
-           }))
+          setTableData(
+            data.map((info: any) => {
+              return {
+                email: info.email,
+                name: info.name,
+                registration: String(info.registration),
+              };
+            })
+          );
         }
       });
     } else if (info.file.status === "error") {
@@ -104,65 +105,62 @@ const RegisterClass: NextPage = () => {
       header: {
         Authorization: `Bearer ${user.token}`,
       },
-    })
-      .then(({ data: dataClass }) => {
-        if (!dataClass) {
-          toast.error("Erro ao criar turma", {
-            toastId: "createClass",
-          });
-        }
+    }).then(({ data: dataClass }) => {
+      if (!dataClass) {
+        toast.error("Erro ao criar turma", {
+          toastId: "createClass",
+        });
+      }
 
-        for (let i = 0; i < tableData.length; i++) {
-          handleCreateUser({
-            values: { ...tableData[i], userType: "student" },
-            header: {
-              Authorization: `Bearer ${user.token}`,
-            },
-          })
-            .then(({ data, error }: any) => {
-              const handleRelationClass = async (userId: string) => {
-                await handleCreateRelationClass({
-                  values: { subjectClassId: dataClass.id, userId },
-                })
-                .then(({error}: any) => {
-                  if (error) {
-                    console.error(error)
-                    return
-                  }
-
-                  router.push(appRoutes.classes)
-                })
-              };
-
-              if (error?.message === "Usuário já cadastrado") {
-                handleGetUser({
-                  refetchPathOptions: `${tableData[i].email}`,
-                  header: {
-                    Authorization: `Bearer ${user.token}`,
-                  },  
-                }).then(({ data, error }: any) => {
-                  if (error) {
-                    toast.error("Error ao localizar o usuário", {
-                      toastId: "getUser",
-                    });
-                    return;
-                  }
-
-                  handleRelationClass(data.id);
-                  return;
-                });
-              }
-              
+      for (let i = 0; i < tableData.length; i++) {
+        handleCreateUser({
+          values: { ...tableData[i], userType: "student" },
+          header: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        }).then(({ data, error }: any) => {
+          const handleRelationClass = async (userId: string) => {
+            await handleCreateRelationClass({
+              values: { subjectClassId: dataClass.id, userId },
+            }).then(({ error }: any) => {
               if (error) {
-                console.log(error);
+                console.error(error);
+                return;
+              }
+
+              router.push(appRoutes.classes);
+            });
+          };
+
+          if (error?.message === "Usuário já cadastrado") {
+            handleGetUser({
+              refetchPathOptions: `${tableData[i].email}`,
+              header: {
+                Authorization: `Bearer ${user.token}`,
+              },
+            }).then(({ data, error }: any) => {
+              if (error) {
+                toast.error("Error ao localizar o usuário", {
+                  toastId: "getUser",
+                });
                 return;
               }
 
               handleRelationClass(data.id);
               return;
             });
-        }
-      });
+          }
+
+          if (error) {
+            console.log(error);
+            return;
+          }
+
+          handleRelationClass(data.id);
+          return;
+        });
+      }
+    });
   };
 
   return !loading ? (
@@ -197,25 +195,25 @@ const RegisterClass: NextPage = () => {
             );
           })}
           <div className={styles.xlsxDiv}>
-          <span>(Apenas arquivos xlsx)</span>
-          <Button 
-            className={styles.xlsxButton} 
-            onClick={() => download("/exemplo.xlsx", "exemplo.xlsx")} 
-          >
-            Baixar exemplo
-          </Button>
-          <Upload
-            onChange={onUploadFile}
-            accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-            onRemove={() => {
-              setTableData([]);
-            }}
-            maxCount={1}
-          >
-            <Button className={styles.buttonUpload} icon={<UploadOutlined />}>
-              Alunos
+            <span>(Apenas arquivos xlsx)</span>
+            <Button
+              className={styles.xlsxButton}
+              onClick={() => download("/exemplo.xlsx", "exemplo.xlsx")}
+            >
+              Baixar exemplo
             </Button>
-          </Upload>
+            <Upload
+              onChange={onUploadFile}
+              accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+              onRemove={() => {
+                setTableData([]);
+              }}
+              maxCount={1}
+            >
+              <Button className={styles.buttonUpload} icon={<UploadOutlined />}>
+                Alunos
+              </Button>
+            </Upload>
           </div>
         </div>
 

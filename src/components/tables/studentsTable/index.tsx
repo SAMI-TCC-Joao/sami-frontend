@@ -3,20 +3,10 @@ import type { InputRef } from "antd";
 import { Button, Input, Space, Table } from "antd";
 import type { ColumnsType, ColumnType } from "antd/es/table";
 import type { FilterConfirmProps } from "antd/es/table/interface";
-import React, {
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { Dispatch, useEffect, useRef, useState } from "react";
 import Highlighter from "react-highlight-words";
 import Styles from "./styles.module.css";
-import MoreInfosTable from "../../dropdown/moreInfosTable";
-import useCRUD from "../../hooks/useCRUD";
-import { useSelector } from "react-redux";
 import RemoveStudent from "../../dropdown/removeStudent";
-import { GetStaticProps } from "next";
 
 interface DataType {
   id?: string;
@@ -52,17 +42,25 @@ const StudentsTable = ({ students, setOpenModal, setUserDataId }: Props) => {
   const searchInput = useRef<InputRef>(null);
 
   useEffect(() => {
-    const studentsData = students.map((info) => {
+    const studentsData = students.map((info: any) => {
       return {
         id: info.user.id,
         name: info.user.name,
         email: info.user.email,
         registration: info.user.registration,
-        more: <RemoveStudent setOpenModal={setOpenModal} userId={info.id} setUserDataId={setUserDataId} />
+        ...(info.id !== "none" && {
+          more: (
+            <RemoveStudent
+              setOpenModal={setOpenModal}
+              userId={info.id}
+              setUserDataId={setUserDataId}
+            />
+          ),
+        }),
       };
     });
     setStudentsTableData(studentsData);
-  }, []);
+  }, [students]);
 
   const handleSearch = (
     selectedKeys: string[],

@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import styles from "@/styles/UpdateClass.module.css";
 import { Button, Form, Input } from "antd";
 import { GetStaticPaths, GetStaticProps, NextPage } from "next";
@@ -81,7 +80,7 @@ const UpdateClass: NextPage = () => {
   });
 
   useEffect(() => {
-    if (!route.isReady) return;
+    if (!route.isReady || !route.query.index) return;
 
     handleGetClass({
       refetchPathOptions: route.query.index as string,
@@ -102,7 +101,7 @@ const UpdateClass: NextPage = () => {
         semester: data.semester,
         subjectId: data.subjectId,
         subjectName: data.subjectName,
-        UsersSubjectClasses: data.UsersSubjectClasses.map((infos) => {
+        UsersSubjectClasses: data.UsersSubjectClasses.map((infos: any) => {
           return {
             id: infos?.id,
             user: infos?.user,
@@ -111,7 +110,7 @@ const UpdateClass: NextPage = () => {
       });
       return;
     });
-  }, []);
+  }, [route.query.index]);
 
   useEffect(() => {
     if (classData.id) {
@@ -119,55 +118,36 @@ const UpdateClass: NextPage = () => {
     }
   }, [classData]);
 
-  const onUploadFile = (info) => {
+  const onUploadFile = async (info: any) => {
+    setTableData([]);
+    const data = await info.arrayBuffer();
+    readXlsxFile(data).then((rows) => {
+      const dataShift = rows.shift() as string[];
 
-    if (info.file.status === "done") {
-      if (info.file.name.split(".")[1] !== "xlsx") {
-        toast.error("Arquivo inválido", {
-          toastId: "upload",
+      const data = rows.map((row) => {
+        const obj = {};
+        row.forEach((item, index) => {
+          obj[dataShift[index]] = item;
         });
-        return;
+        return obj;
+      });
+
+      if (data !== undefined) {
+        setTableData(
+          data.map((info: any) => {
+            return {
+              email: info.email,
+              name: info.name,
+              registration: String(info.registration),
+            };
+          })
+        );
       }
-
-      toast.success(`Arquivo '${info.file.name}' carregado com sucesso`, {
-        toastId: "uploadSuccess",
-      });
-
-      readXlsxFile(info.file.originFileObj).then((rows) => {
-        const dataShift = rows.shift() as string[];
-
-        const data = rows.map((row) => {
-          const obj = {};
-          row.forEach((item, index) => {
-            obj[dataShift[index]] = item;
-          });
-          return obj;
-        });
-
-        if (data !== undefined) {
-          setTableData(
-            data.map((info) => {
-              return {
-                email: info.email,
-                name: info.name,
-                registration: String(info.registration),
-              };
-            })
-          );
-          createNewUsersRelation();
-        }
-      });
-    }
-    if (info.file.status === "error") {
-      toast.error("Erro ao carregar arquivo", {
-        toastId: "uploadError",
-      });
-    }
+    });
   };
 
   const createNewUsersRelation = () => {
     for (let i = 0; i < tableData.length; i++) {
-
       handleCreateUser({
         values: { ...tableData[i], userType: "student" },
         header: {
@@ -208,6 +188,9 @@ const UpdateClass: NextPage = () => {
         return;
       });
     }
+    toast.success("Turma atualizada com sucesso", {
+      toastId: "updateClass",
+    });
   };
 
   const updateClass = () => {
@@ -228,6 +211,8 @@ const UpdateClass: NextPage = () => {
       toast.success("Turma atualizada com sucesso", {
         toastId: "updateClass",
       });
+
+      createNewUsersRelation();
       handleGetClass();
     });
   };
@@ -332,7 +317,16 @@ const UpdateClass: NextPage = () => {
 
                 <p className={styles.labelForm}>Alunos</p>
                 <StudentsTable
-                  students={classData.UsersSubjectClasses}
+                  students={[
+                    ...classData.UsersSubjectClasses,
+
+                    ...tableData?.map((info) => {
+                      return {
+                        id: "none",
+                        user: info,
+                      };
+                    }),
+                  ]}
                   setOpenModal={setOpenModal}
                   setUserDataId={setUserDataId}
                 />
@@ -346,22 +340,25 @@ const UpdateClass: NextPage = () => {
                     flexDirection: "column",
                   }}
                 >
-                  <Upload
-                    onChange={onUploadFile}
-                    accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                    onRemove={() => {
-                      setTableData([]);
+                  <label
+                    style={{
+                      fontSize: "1.1rem",
+                      fontWeight: "bold",
+                      marginBottom: "0.5rem",
                     }}
-                    maxCount={1}
+                    htmlFor="file"
                   >
-                    <Button
-                      className={styles.addStudentsBtn}
-                      icon={<UploadOutlined />}
-                      type="primary"
-                    >
-                      Adicionar Alunos
-                    </Button>
-                  </Upload>
+                    Adicionar alunos
+                  </label>
+                  <input
+                    type="file"
+                    id="file"
+                    name="file"
+                    accept=".xlsx"
+                    onChange={(e: any) => {
+                      onUploadFile(e.target.files[0]);
+                    }}
+                  />
                   <span>(Apenas arquivos xlsx)</span>
                 </div>
 
