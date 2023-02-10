@@ -110,6 +110,10 @@ const ClassesTable = () => {
     classesData();
   }, [JSON.stringify(tableParams)]);
 
+  useEffect(() => {
+    classesData();
+  }, []);
+
   const handleSearch = (
     selectedKeys: string[],
     confirm: (param?: FilterConfirmProps) => void,
