@@ -206,21 +206,7 @@ export function IndicatorTable({
                   ? "Em andamento"
                   : "Finalizado",
               actions: (
-                <Dropdown
-                  arrow
-                  trigger={["click"]}
-                  menu={{
-                    items: dataDropdown("evaluation"),
-                    onClick: (e) =>
-                      handleMenu(e.key, "evaluation", evaluation.id),
-                  }}
-                >
-                  <img
-                    src="/more.svg"
-                    alt="ver mais"
-                    className={styles.moreIcon}
-                  />
-                </Dropdown>
+                <div/>
               ),
             };
           }),
