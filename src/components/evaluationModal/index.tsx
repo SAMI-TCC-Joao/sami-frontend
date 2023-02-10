@@ -54,11 +54,11 @@ export function EvaluationModal({
       values: evaluation,
     }).then(({ data, error }) => {
       if (error) {
-        toast.error("Erro ao criar avaliação");
+        toast.error("Erro ao criar aplicação");
         return;
       }
 
-      toast.success("Avaliação criada com sucesso");
+      toast.success("Aplicação criada com sucesso");
       setEvaluation({
         formId: "",
         indicatorId: "",

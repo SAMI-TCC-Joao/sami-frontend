@@ -131,7 +131,7 @@ const Home: NextPage = () => {
                 />
               ))
             ) : (
-              "Nenhuma avaliação disponível"
+              "Nenhum formulário disponível"
             )
           ) : (
             <Tabs className={styles.tabs} defaultActiveKey="my" items={items} />
