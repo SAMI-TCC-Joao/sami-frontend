@@ -7,131 +7,181 @@ import { appRoutes } from "../../../constants";
 
 const baseURL = process.env.NEXT_PUBLIC_API_URL;
 
-const useCRUD = ({ model = '', options = {}, pathOptions = '', headerOptions = {}, immediatlyLoadData = false }) => {
-    const router = useRouter();
-    const { user } = useSelector((state) => state)
-    const { pathname } = router;
-    const [loading, setLoading] = useState(immediatlyLoadData);
-    const [data, setData] = useState(null);
+const useCRUD = ({
+  model = "",
+  options = {},
+  pathOptions = "",
+  headerOptions = {},
+  immediatlyLoadData = false,
+}) => {
+  const router = useRouter();
+  const { user } = useSelector((state) => state);
+  const { pathname } = router;
+  const [loading, setLoading] = useState(immediatlyLoadData);
+  const [data, setData] = useState(null);
 
-    const headers = {
-        'Content-Type': 'application/json',
-        ...(user?.token && {'Authorization': `Bearer ${user?.token}`}),
-        ...headerOptions
-      };
+  const headers = {
+    "Content-Type": "application/json",
+    ...(user?.token && { Authorization: `Bearer ${user?.token}` }),
+    ...headerOptions,
+  };
 
-    const throwError = useCallback((errorParam, displayToast = true) => {
-        setLoading(false);
-        const { response: { data: errorData = {} } = {} } = errorParam;
-        const { code = '', statusCode = null, logout: shouldLogout, message = null } = errorData || {};
-    
-        if (code && shouldLogout) {
-          return pathname === appRoutes.login ? null : router.push(appRoutes.logout);
-        }
-    
-        const errMsg = message || `Ocorreu um erro ${code}`;
+  const throwError = useCallback((errorParam, displayToast = true) => {
+    setLoading(false);
+    const { response: { data: errorData = {} } = {} } = errorParam;
+    const {
+      code = "",
+      statusCode = null,
+      logout: shouldLogout,
+      message = null,
+    } = errorData || {};
 
-        return { error: { message: errMsg } };
-      }, []);
+    if (code && shouldLogout) {
+      return pathname === appRoutes.login
+        ? null
+        : router.push(appRoutes.logout);
+    }
 
-    const handleGet = useCallback(
-        ({ refetchOptions = null, refetchPathOptions = '', generateLoading = true, displayToast = true, header = {} } = {}) => {
+    const errMsg = message || `Ocorreu um erro ${code}`;
 
-          if (generateLoading) setLoading(true);
-          if (!header) header = headers;
-    
-          // eslint-disable-next-line consistent-return
-          return axios
-            .get(`${baseURL}/${model}/${refetchPathOptions || pathOptions}`, {
-              params: refetchOptions || options,
-              headers: header
-            })
-            .catch(err => throwError(err, displayToast))
-            .finally(() => {
-              setLoading(false);
-            });
-        },
-        [model, pathOptions]
-      );
+    return { error: { message: errMsg } };
+  }, []);
 
-      const handleCreate = useCallback(
-        ({ values = {}, refetchOptions = null, refetchPathOptions = '', generateLoading = true, displayToast = true, header = {} } = {}) => {
-          if (generateLoading) setLoading(true);
-          if (!header) header = headers;
-    
-          // eslint-disable-next-line consistent-return
-          return axios
-            .post(`${baseURL}/${model}/${refetchPathOptions || pathOptions}`, values, {
-              params: refetchOptions || options,
-              headers
-            })
-            .catch(err => throwError(err, displayToast))
-            .finally(() => {
-              setLoading(false);
-            });
-        },
-        [model, pathOptions]
-      );
+  const handleGet = useCallback(
+    ({
+      refetchOptions = null,
+      refetchPathOptions = "",
+      generateLoading = true,
+      displayToast = true,
+      header = {},
+    } = {}) => {
+      if (generateLoading) setLoading(true);
+      if (!header) header = headers;
 
-      const handleUpdate = useCallback(
-        ({ values = {}, id = '', refetchOptions = null, refetchPathOptions = '', generateLoading = true, displayToast = true, header = {} } = {}) => {
+      // eslint-disable-next-line consistent-return
+      return axios
+        .get(`${baseURL}/${model}/${refetchPathOptions || pathOptions}`, {
+          params: refetchOptions || options,
+          headers: header,
+        })
+        .catch((err) => throwError(err, displayToast))
+        .finally(() => {
+          setLoading(false);
+        });
+    },
+    [model, pathOptions]
+  );
 
-          if (generateLoading) setLoading(true);
-          if (!header) header = headers;
-    
-          // eslint-disable-next-line consistent-return
-          return axios
-            .patch(`${baseURL}/${model}/${id}${refetchPathOptions || pathOptions}`, values, {
-              params: refetchOptions || options,
-              headers
-            })
-            .catch(err => throwError(err, displayToast))
-            .finally(() => {
-              setLoading(false);
-            });
-        },
-        [model, pathOptions]
-      );
+  const handleCreate = useCallback(
+    ({
+      values = {},
+      refetchOptions = null,
+      refetchPathOptions = "",
+      generateLoading = true,
+      displayToast = true,
+      header = {},
+    } = {}) => {
+      if (generateLoading) setLoading(true);
+      if (!header) header = headers;
 
-      const handleDelete = useCallback(
-        ({ values = {}, id = '', refetchOptions = null, refetchPathOptions = {}, generateLoading = true, displayToast = true, header = {} } = {}) => {
+      // eslint-disable-next-line consistent-return
+      return axios
+        .post(
+          `${baseURL}/${model}/${refetchPathOptions || pathOptions}`,
+          values,
+          {
+            params: refetchOptions || options,
+            headers,
+          }
+        )
+        .catch((err) => throwError(err, displayToast))
+        .finally(() => {
+          setLoading(false);
+        });
+    },
+    [model, pathOptions]
+  );
 
-          if (generateLoading) setLoading(true);
-          if (!header) header = headers;
-    
-          // eslint-disable-next-line consistent-return
-          return axios
-            .delete(`${baseURL}/${model}/${id}${refetchPathOptions || pathOptions}`, {
-                data: values,
-              params: refetchOptions || options,
-              headers
-            })
-            .catch(err => throwError(err, displayToast))
-            .finally(() => {
-              setLoading(false);
-            });
-        },
-        [model, pathOptions]
-      );
+  const handleUpdate = useCallback(
+    ({
+      values = {},
+      id = "",
+      refetchOptions = null,
+      refetchPathOptions = "",
+      generateLoading = true,
+      displayToast = true,
+      header = {},
+    } = {}) => {
+      if (generateLoading) setLoading(true);
+      if (!header) header = headers;
 
-      useEffect(() => {
-        if(immediatlyLoadData){
-          handleGet().then(({data: _data}) => {
-            setData(_data);
-          })
-        }
-      }, []);
+      // eslint-disable-next-line consistent-return
+      return axios
+        .patch(
+          `${baseURL}/${model}/${id}${refetchPathOptions || pathOptions}`,
+          values,
+          {
+            params: refetchOptions || options,
+            headers,
+          }
+        )
+        .catch((err) => throwError(err, displayToast))
+        .finally(() => {
+          setLoading(false);
+        });
+    },
+    [model, pathOptions]
+  );
 
-      return {
-        setLoading,
-        loading,
-        options,
-        handleGet,
-        handleUpdate,
-        handleDelete,
-        handleCreate,
-        data
-      };
-}
+  const handleDelete = useCallback(
+    ({
+      values = {},
+      id = "",
+      refetchOptions = null,
+      refetchPathOptions = {},
+      generateLoading = true,
+      displayToast = true,
+      header = {},
+    } = {}) => {
+      if (generateLoading) setLoading(true);
+      if (!header) header = headers;
+
+      // eslint-disable-next-line consistent-return
+      return axios
+        .delete(
+          `${baseURL}/${model}/${id}${refetchPathOptions || pathOptions}`,
+          {
+            data: values,
+            params: refetchOptions || options,
+            headers,
+          }
+        )
+        .catch((err) => throwError(err, displayToast))
+        .finally(() => {
+          setLoading(false);
+        });
+    },
+    [model, pathOptions]
+  );
+
+  useEffect(() => {
+    if (immediatlyLoadData) {
+      handleGet().then(({ data: _data }) => {
+        setData(_data);
+      });
+    }
+  }, []);
+
+  return {
+    setLoading,
+    loading,
+    options,
+    handleGet,
+    handleUpdate,
+    handleDelete,
+    handleCreate,
+    data,
+  };
+};
 
 export default useCRUD;

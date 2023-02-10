@@ -158,7 +158,8 @@ export function IndicatorTable({
           );
           break;
         case "Reaplicar":
-          toast.warn("Em breve");
+          setFormId(dataId);
+          setEvaluationModal(true);
           break;
         case "Excluir":
           setFormId(dataId);

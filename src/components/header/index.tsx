@@ -23,14 +23,13 @@ export function Header() {
       { label: "Turmas", href: appRoutes.classes },
     ],
     [userType?.admin?.value]: [
+      { label: "Professores", href: appRoutes.allTeachers },
       { label: "Cadastrar professor", href: appRoutes.registerTeacher },
       { label: "Templates", href: appRoutes.home },
     ],
   };
 
-  const items = [
-    { label: "Sair", key: appRoutes.logout }
-  ];
+  const items = [{ label: "Sair", key: appRoutes.logout }];
 
   const onClick = (e: any) => {
     if (e.key) window.location.href = e.key;
@@ -44,7 +43,7 @@ export function Header() {
         alt="UnB + A3M imagem"
         width="128"
         height="76"
-        onClick={() => (router.push(appRoutes.home))}
+        onClick={() => router.push(appRoutes.home)}
       />
       <Space size={16} style={{ display: "flex", alignItems: "center" }}>
         {headerOptions[user?.userType]?.map(({ label, href }, index) => (

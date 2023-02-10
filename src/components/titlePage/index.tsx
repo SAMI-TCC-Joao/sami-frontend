@@ -76,7 +76,7 @@ export function TitlePage({
       )}
       {hideButton ? null : isIndicatorEdit ? (
         <button className={styles.button} onClick={handleUpdateIndicator}>
-          Editar
+          Salvar
         </button>
       ) : isStudent ? null : (
         <button className={styles.button} onClick={() => handleCreate()}>

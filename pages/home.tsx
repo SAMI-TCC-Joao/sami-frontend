@@ -84,9 +84,11 @@ const Home: NextPage = () => {
             toastId: "error",
           });
         }
-
         const evaluationData = data.filter((evaluation: any) => {
-          if (dayjs().isBetween(evaluation.initialDate, evaluation.finalDate)) {
+          if (
+            dayjs().isBetween(evaluation.initialDate, evaluation.finalDate) &&
+            evaluation.repeat[dayjs().format("dddd").toLowerCase()]
+          ) {
             return evaluation;
           }
         });
@@ -115,18 +117,22 @@ const Home: NextPage = () => {
         />
         <div className={styles.cardsDiv}>
           {user?.userType === "student" ? (
-            evaluations?.map((evaluation: any) => (
-              <FormCard
-                key={evaluation?.id}
-                id={evaluation?.id}
-                title={evaluation?.form.name}
-                dateRange={[
-                  new Date(evaluation?.initialDate).toLocaleDateString(),
-                  new Date(evaluation?.finalDate).toLocaleDateString(),
-                ]}
-                isEvaluation
-              />
-            ))
+            evaluations.length > 0 ? (
+              evaluations?.map((evaluation: any) => (
+                <FormCard
+                  key={evaluation?.id}
+                  id={evaluation?.id}
+                  title={evaluation?.form.name}
+                  dateRange={[
+                    new Date(evaluation?.initialDate).toLocaleDateString(),
+                    new Date(evaluation?.finalDate).toLocaleDateString(),
+                  ]}
+                  isEvaluation
+                />
+              ))
+            ) : (
+              "Nenhuma avaliação disponível"
+            )
           ) : (
             <Tabs className={styles.tabs} defaultActiveKey="my" items={items} />
           )}

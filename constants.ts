@@ -17,6 +17,7 @@ const appRoutes = {
   oneIndicator: "/indicators/one/[index]",
   analysesIndicator: "/indicators/analyses/[index]",
   response: "/response/[index]",
+  allTeachers: "/teacher/all",
 };
 
 export { appRoutes };

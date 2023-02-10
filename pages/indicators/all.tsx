@@ -46,16 +46,18 @@ const AllIndicators: NextPage = () => {
       <div className={styles.body}>
         <TitlePage title="Indicadores" isIndicator />
         <div className={styles.cardsDiv}>
-          {indicators?.map((indicator: any) => (
-            <FormCard
-              key={indicator.id}
-              id={indicator.id}
-              title={indicator.name}
-              date={`${new Date(indicator.createdAt).toLocaleDateString()}`}
-              isIndicator
-              reloadInPage={reload}
-            />
-          ))}
+        {indicators.length > 0
+            ? indicators?.map((indicator: any) => (
+                <FormCard
+                  key={indicator.id}
+                  id={indicator.id}
+                  title={indicator.name}
+                  date={`${new Date(indicator.createdAt).toLocaleDateString()}`}
+                  isIndicator
+                  reloadInPage={reload}
+                />
+              ))
+            : "Nenhum indicador cadastrado"}
         </div>
       </div>
     </div>

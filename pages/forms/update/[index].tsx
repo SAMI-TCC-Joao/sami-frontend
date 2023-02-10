@@ -112,6 +112,7 @@ const UpdateForm: NextPage = () => {
         }
         dispatch(formsUpdate(data));
         if (router.query?.indicator) {
+          toast.loading("Atualizando indicador...");
           router.push(
             appRoutes.oneIndicator.replace(
               "[index]",

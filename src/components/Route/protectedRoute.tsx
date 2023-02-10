@@ -17,6 +17,21 @@ const ProtectedRoute = ({ router, children }: any) => {
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [initialLoad, setInitialLoad] = useState(true);
+
+  const backendStart = () => {
+    return userAuthenticated({
+      header: {
+        Authorization: `Bearer ${user.token}`,
+      },
+    }).then(({ data }) => {
+      if (data) {
+        return "success";
+      } else {
+        return "error";
+      }
+    });
+  };
 
   const protectedRoutes = {
     student: [
@@ -50,6 +65,7 @@ const ProtectedRoute = ({ router, children }: any) => {
       appRoutes.registerForm,
       appRoutes.updateForm,
       appRoutes.response,
+      appRoutes.allTeachers,
     ],
     default: [
       appRoutes.login,
@@ -60,6 +76,34 @@ const ProtectedRoute = ({ router, children }: any) => {
   };
 
   useLayoutEffect(() => {
+    if (initialLoad) {
+      if (
+        (router.pathname === appRoutes.login ||
+          router.pathname === appRoutes.firstAccess ||
+          router.pathname === appRoutes.index) &&
+        user.token !== null
+      ) {
+        backendStart();
+        setInitialLoad(false);
+        setIsLoading(true);
+        return;
+      }
+
+      toast.promise(
+        backendStart(),
+        {
+          pending: "Validando informações...",
+          success: "Projeto iniciado com sucesso",
+          error: "Erro ao iniciar projeto",
+        },
+        {
+          toastId: "backendStart",
+        }
+      );
+
+      setInitialLoad(false);
+    }
+
     if (user.token === null) {
       setIsLoading(true);
       return;
@@ -108,10 +152,7 @@ const ProtectedRoute = ({ router, children }: any) => {
   }, [isAuthenticated && !enums]);
 
   if (isLoading) {
-    if (
-      !user.id &&
-      protectedRoutes.default.includes(router.pathname)
-    ) {
+    if (!user.id && protectedRoutes.default.includes(router.pathname)) {
       return children;
     }
 

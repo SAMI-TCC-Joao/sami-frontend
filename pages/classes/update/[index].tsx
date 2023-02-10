@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import styles from "@/styles/UpdateClass.module.css";
 import { Button, Form, Input } from "antd";
 import { GetStaticPaths, GetStaticProps, NextPage } from "next";
@@ -6,14 +7,13 @@ import { useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import BackPage from "../../../src/components/backPages";
 import { Header } from "../../../src/components/header";
-import Upload from "antd/lib/upload/Upload";
-import { UploadOutlined } from "@ant-design/icons";
 import readXlsxFile from "read-excel-file";
 import useCRUD from "../../../src/components/hooks/useCRUD";
 import { toast } from "react-toastify";
 import StudentsTable from "../../../src/components/tables/studentsTable";
 import RemoveStudentModal from "../../../src/components/modals/removeStudent";
 import { ITableUser } from "../../../src/types/interfaces";
+import { appRoutes } from "../../../constants";
 
 export const getStaticPaths: GetStaticPaths = () => {
   return {
@@ -45,6 +45,7 @@ const UpdateClass: NextPage = () => {
   const { enums, user } = useSelector((state: any) => state);
   const hasEnums = Object.keys(enums).length;
   const route = useRouter();
+  const router = useRouter();
 
   const [classData, setClassData] = useState<AllDataClass>({
     id: null,
@@ -137,8 +138,8 @@ const UpdateClass: NextPage = () => {
           data.map((info: any) => {
             return {
               email: info.email,
-              name: info.name,
-              registration: String(info.registration),
+              name: info.name || info.nome,
+              registration: String(info.registration || info.matricula),
             };
           })
         );
@@ -213,7 +214,9 @@ const UpdateClass: NextPage = () => {
       });
 
       createNewUsersRelation();
-      handleGetClass();
+      handleGetClass().then(() => {
+        router.push(appRoutes.classes);
+      });
     });
   };
 
