@@ -162,7 +162,7 @@ export function IndicatorTable({
           setFormId(dataId);
           setEvaluationModal(extra);
           break;
-        case: "Agendar":
+        case "Agendar":
           setFormId(dataId);
           setFormName(dataName);
           setEvaluationModal({});
