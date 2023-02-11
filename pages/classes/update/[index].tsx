@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import styles from "@/styles/UpdateClass.module.css";
+import styles from "../../../styles/UpdateClass.module.css";
 import { Button, Form, Input } from "antd";
 import { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import React, { useEffect, useState } from "react";
@@ -14,6 +14,7 @@ import StudentsTable from "../../../src/components/tables/studentsTable";
 import RemoveStudentModal from "../../../src/components/modals/removeStudent";
 import { ITableUser } from "../../../src/types/interfaces";
 import { appRoutes } from "../../../constants";
+import Head from "next/dist/shared/lib/head";
 
 export const getStaticPaths: GetStaticPaths = () => {
   return {
@@ -221,7 +222,19 @@ const UpdateClass: NextPage = () => {
   };
 
   return hasEnums && !loading ? (
-    <div className={styles.container}>
+    <div
+      style={{
+        overflowX: "hidden",
+        height: "100vh",
+      }}
+    >
+      <Head>
+        <title>Atualizar turma - SAMI</title>
+        <meta
+          name="Atualizar turma"
+          content="Página para atualizar uma turma"
+        />
+      </Head>
       <Header />
 
       <div className={styles.body}>
@@ -345,9 +358,16 @@ const UpdateClass: NextPage = () => {
                 >
                   <label
                     style={{
-                      fontSize: "1.1rem",
-                      fontWeight: "bold",
-                      marginBottom: "0.5rem",
+                      padding: "20px 10px",
+                      width: "200p",
+                      backgroundColor: "#333",
+                      color: "#FFF",
+                      textTransform: "uppercase",
+                      textAlign: "center",
+                      display: "block",
+                      marginTop: "10px",
+                      cursor: "pointer",
+                      borderRadius: "5px",
                     }}
                     htmlFor="file"
                   >
@@ -356,6 +376,7 @@ const UpdateClass: NextPage = () => {
                   <input
                     type="file"
                     id="file"
+                    style={{ display: "none" }}
                     name="file"
                     accept=".xlsx"
                     onChange={(e: any) => {

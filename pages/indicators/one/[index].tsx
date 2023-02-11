@@ -104,7 +104,7 @@ const OneIndicator: NextPage = () => {
       },
     }).then(({ data, error }) => {
       if (error) {
-        toast.error("Erro ao buscar grupos");
+        toast.error("Erro ao buscar conjuntos");
         return;
       }
 
@@ -143,7 +143,7 @@ const OneIndicator: NextPage = () => {
 
   const onNameChange = (event: any, type: string) => {
     if (type === "group") {
-    setNameGroup(event.target.value);
+      setNameGroup(event.target.value);
     } else {
       setNameMethodology(event.target.value);
     }
@@ -153,7 +153,7 @@ const OneIndicator: NextPage = () => {
     e.preventDefault();
 
     if (type === "group" && !nameGroup) {
-      return toast.error("Nome do grupo é obrigatório", {
+      return toast.error("Nome do conjunto é obrigatório", {
         toastId: "error-group",
       });
     }
@@ -174,7 +174,7 @@ const OneIndicator: NextPage = () => {
         },
       }).then(({ data, error }) => {
         if (error) {
-          return toast.error("Erro ao criar grupo", {
+          return toast.error("Erro ao criar conjunto", {
             toastId: "error",
           });
         }
@@ -250,7 +250,9 @@ const OneIndicator: NextPage = () => {
               className={styles.select}
               size="large"
               filterOption={(input, option) =>
-                (`${option?.label ?? ''}`).toLowerCase().includes(input.toLowerCase())
+                `${option?.label ?? ""}`
+                .toLowerCase()
+                .includes(input.toLowerCase())
               }
               dropdownRender={(menu) => (
                 <>
@@ -277,7 +279,7 @@ const OneIndicator: NextPage = () => {
             />
           </div>
           <div className={styles.selectDiv}>
-            <p className={styles.inputName}>Grupo:</p>
+            <p className={styles.inputName}>Conjunto:</p>
             <Select
               showSearch
               onChange={(value) => {
@@ -288,7 +290,9 @@ const OneIndicator: NextPage = () => {
               className={styles.select}
               size="large"
               filterOption={(input, option) =>
-                (`${option?.label ?? ''}`).toLowerCase().includes(input.toLowerCase())
+                `${option?.label ?? ""}`
+                  .toLowerCase()
+                  .includes(input.toLowerCase())
               }
               dropdownRender={(menu) => (
                 <>

@@ -28,6 +28,7 @@ export function IndicatorTable({
   const [informationModal, setInformationModal] = useState("");
   const [deleteModal, setDeleteModal] = useState(false);
   const [formId, setFormId] = useState("");
+  const [formName, setFormName] = useState("");
   const [isDeleteEvaluation, setIsDeleteEvaluation] = useState("" as any);
   const [evaluationModal, setEvaluationModal] = useState(null as any);
 
@@ -141,7 +142,13 @@ export function IndicatorTable({
     });
   };
 
-  const handleMenu = (menuType: string, option: string, dataId: string, extra: any) => {
+  const handleMenu = (
+    menuType: string,
+    option: string,
+    dataId: string,
+    dataName: string,
+    extra: any
+  ) => {
     if (option === "form-add") {
       setIsModalOpen(true);
       setInformationModal(menuType);
@@ -156,8 +163,7 @@ export function IndicatorTable({
           setEvaluationModal(extra);
           break;
         case "Excluir":
-          toast.warn("Em breve");
-          deleteEvaluation
+          setIsDeleteEvaluation(extra);
           break;
         default:
           toast.error("Erro inesperado");
@@ -174,6 +180,7 @@ export function IndicatorTable({
           break;
         case "Reaplicar":
           setFormId(dataId);
+          setFormName(dataName);
           setEvaluationModal({});
           break;
         case "Excluir":
@@ -202,6 +209,7 @@ export function IndicatorTable({
                 className={styles.addLayer}
                 onClick={() => {
                   setFormId(item.id);
+                  setFormName(item.name);
                   setEvaluationModal({});
                 }}
               />

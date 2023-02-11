@@ -29,7 +29,11 @@ const Home: NextPage = () => {
     if (user?.userType === "student") {
       return;
     }
-    getTemplateForms().then(({ data }) => {
+    getTemplateForms({
+      header: {
+        Authorization: `Bearer ${user.token}`,
+      },
+    }).then(({ data }) => {
       setTemplateForms(data);
     });
   }, []);

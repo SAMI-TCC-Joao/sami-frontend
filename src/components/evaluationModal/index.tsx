@@ -24,6 +24,7 @@ interface EvaluationModalProps {
   indicatorId: string;
   handleReload: () => void;
   setEvaluationModal: (value: boolean) => void;
+  formName: string;
 }
 
 export function EvaluationModal({
@@ -32,12 +33,14 @@ export function EvaluationModal({
   indicatorId,
   handleReload,
   setEvaluationModal,
+  formName,
 }: EvaluationModalProps) {
   const router = useRouter();
 
   const { user } = useSelector((state: any) => state);
   const { handleGet: handleGetClasses } = useCRUD({ model: "classe" });
   const { handleCreate: handleCreateEvaluation, handleUpdate: handleUpdateEvaluation } = useCRUD({ model: "evaluation" });
+  const [firstVerify, setFirstVerify] = useState(false);
   const [classes, setClasses] = useState([] as any);
   const [shouldRepeat, setShouldRepeat] = useState(false as boolean);
   const [evaluation, setEvaluation] = useState({
@@ -60,6 +63,24 @@ export function EvaluationModal({
   });
 
   const handleOk = () => {
+    if (!evaluation.classId) {
+      toast.error("Selecione uma turma");
+      setFirstVerify(true);
+      return;
+    }
+
+    if (!evaluation.initialDate) {
+      toast.error("Selecione uma data inicial");
+      setFirstVerify(true);
+      return;
+    }
+
+    if (!evaluation.finalDate) {
+      toast.error("Selecione uma data final");
+      setFirstVerify(true);
+      return;
+    }
+
     const {id, ..._evaluation} = evaluation;
     const func = id ? handleUpdateEvaluation : handleCreateEvaluation
     func({
@@ -97,6 +118,7 @@ export function EvaluationModal({
 
   const handleCancel = () => {
     setEvaluationModal(false);
+    setFirstVerify(false);
     setEvaluation({
       id: undefined,
       formId: "",
@@ -154,10 +176,18 @@ export function EvaluationModal({
       <div className={styles.lineFlex}>
         <div className={styles.divFlex}>
           <span className={styles.title}>Formulário: </span>
-          <span>teste</span>
+          <span>{formName}</span>
         </div>
         <div className={styles.divFlex}>
-          <span className={styles.title}>Turma: </span>
+        <span
+            className={
+              firstVerify && !evaluation.classId
+                ? styles.titleError
+                : styles.title
+            }
+          >
+            Turma:{" "}
+          </span>
           <Select
             showSearch
             placeholder="Selecione a turma"
@@ -166,7 +196,11 @@ export function EvaluationModal({
                 .toLowerCase()
                 .includes(input.toLowerCase())
             }
-            className={styles.select}
+            className={
+              firstVerify && !evaluation.classId
+                ? styles.selectError
+                : styles.select
+            }
             options={classes.map((classe: any) => ({
               value: classe.id,
               label: classe.name,
@@ -179,7 +213,15 @@ export function EvaluationModal({
         </div>
       </div>
       <div className={styles.divFlexRange}>
-        <span className={styles.title}>Período: </span>
+      <span
+          className={
+            firstVerify && !evaluation.initialDate && !evaluation.finalDate
+              ? styles.titleError
+              : styles.title
+          }
+        >
+          Período:{" "}
+        </span>
         <DatePicker.RangePicker
           showTime
           onChange={(value, valueString) =>
@@ -190,7 +232,11 @@ export function EvaluationModal({
             })
           }
           placeholder={["Escolha a data inicial", "Escolha a data final"]}
-          className={styles.datePicker}
+          className={
+            firstVerify && !evaluation.initialDate && !evaluation.finalDate
+              ? styles.datePickerError
+              : styles.datePicker
+          }
         />
       </div>
       <div className={styles.descriptionDiv}>

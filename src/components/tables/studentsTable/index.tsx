@@ -22,6 +22,7 @@ interface Props {
   students: any[];
   setOpenModal: Dispatch<boolean>;
   setUserDataId: Dispatch<string>;
+  notEditable?: boolean;
 }
 
 // export const getStaticProps: GetStaticProps = () => {
@@ -32,7 +33,12 @@ interface Props {
 //   }
 // }
 
-const StudentsTable = ({ students, setOpenModal, setUserDataId }: Props) => {
+const StudentsTable = ({
+  students,
+  setOpenModal,
+  setUserDataId,
+  notEditable,
+}: Props) => {
   const [search, setSearch] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const [studentsTableData, setStudentsTableData] = useState<DataType[]>(
@@ -161,7 +167,7 @@ const StudentsTable = ({ students, setOpenModal, setUserDataId }: Props) => {
       ),
   });
 
-  const columns: ColumnsType<DataType> = [
+  const columns: ColumnsType = [
     {
       title: "Nome",
       dataIndex: "name",
@@ -170,7 +176,7 @@ const StudentsTable = ({ students, setOpenModal, setUserDataId }: Props) => {
       sorter: (a, b) => a.name.length - b.name.length,
       sortDirections: ["ascend", "descend"],
       align: "center",
-      width: 85,
+      width: notEditable ? "34%" : 85,
     },
     {
       title: "Email",
@@ -180,7 +186,7 @@ const StudentsTable = ({ students, setOpenModal, setUserDataId }: Props) => {
       sorter: (a, b) => a.name.length - b.name.length,
       sortDirections: ["ascend", "descend"],
       align: "center",
-      width: 85,
+      width: notEditable ? "33%" : 85,
     },
     {
       title: "Matrícula",
@@ -190,14 +196,18 @@ const StudentsTable = ({ students, setOpenModal, setUserDataId }: Props) => {
       sorter: (a, b) => a.name.length - b.name.length,
       sortDirections: ["ascend", "descend"],
       align: "center",
-      width: 85,
+      width: notEditable ? "33%" : 85,
     },
-    {
-      title: "",
-      dataIndex: "more",
-      key: "more",
-      width: 20,
-    },
+    ...[
+      notEditable
+        ? {}
+        : {
+            title: "",
+            dataIndex: "more",
+            key: "more",
+            width: 20,
+          },
+    ],
   ];
 
   return (

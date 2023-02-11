@@ -74,7 +74,7 @@ const Response: NextPage = () => {
             toastId: "error-load-form",
           });
         } else {
-          if (data.form.random) {
+          if (data.form?.random) {
             data.form.questions = data.form.questions.sort(() =>
               Math.random() > 0.5 ? 1 : -1
             );

@@ -202,7 +202,7 @@ export function IndicatorModal({
       },
     }).then(({ data, error }) => {
       if (error) {
-        return toast.error("Erro ao carregar grupos", {
+        return toast.error("Erro ao carregar conjuntos", {
           toastId: "error",
         });
       }

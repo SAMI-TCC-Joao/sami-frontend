@@ -44,6 +44,23 @@
   margin: 1.5rem 0;
 }
 
+.datePickerError {
+  width: 100%;
+  border: 1px solid red;
+}
+
+.selectError {
+  width: 100%;
+  border: 1px solid red;
+  border-radius: 0.5rem;
+}
+
+.titleError {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: red;
+}
+
 .weekTitleDiv {
   display: flex;
   align-items: center;

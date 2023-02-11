@@ -1,12 +1,10 @@
 import type { NextPage } from "next";
-import { UploadOutlined } from "@ant-design/icons";
 import readXlsxFile from "read-excel-file";
 import useDownloader from "react-use-downloader";
 import { Header } from "../src/components/header";
 import { Button } from "antd";
 import { InputForms } from "../src/components/inputForms";
 import styles from "../styles/RegisterTeacher.module.css";
-import Upload from "antd/lib/upload/Upload";
 import useCRUD from "../src/components/hooks/useCRUD";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
@@ -16,6 +14,7 @@ import Head from "next/head";
 import { useSelector } from "react-redux";
 import { ITableUser } from "../src/types/interfaces";
 import { appRoutes } from "../constants";
+import StudentsTable from "../src/components/tables/studentsTable";
 
 const formFields = [
   { title: "Nome", type: "string", key: "name" },
@@ -29,6 +28,8 @@ const RegisterClass: NextPage = () => {
   const [tableData, setTableData] = useState<ITableUser[]>({} as ITableUser[]);
   const router = useRouter();
   const [classData, setClassData] = useState({});
+  const [userDataId, setUserDataId] = useState("");
+  const [openModal, setOpenModal] = useState(false);
 
   const { download } = useDownloader();
 
@@ -58,45 +59,32 @@ const RegisterClass: NextPage = () => {
     }
   }, [data]);
 
-  const onUploadFile = (info: any) => {
-    if (info.file.status === "done") {
-      if (info.file.name.split(".")[1] !== "xlsx") {
-        toast.error("Arquivo inválido", {
-          toastId: "upload",
+  const onUploadFile = async (info: any) => {
+    setTableData([]);
+    const data = await info.arrayBuffer();
+    readXlsxFile(data).then((rows) => {
+      const dataShift = rows.shift() as string[];
+
+      const data = rows.map((row) => {
+        const obj = {};
+        row.forEach((item, index) => {
+          obj[dataShift[index]] = item;
         });
-        return;
+        return obj;
+      });
+
+      if (data !== undefined) {
+        setTableData(
+          data.map((info: any) => {
+            return {
+              email: info.email,
+              name: info.name || info.nome,
+              registration: String(info.registration || info.matricula),
+            };
+          })
+        );
       }
-
-      toast.success(`Arquivo '${info.file.name}' carregado com sucesso`, {
-        toastId: "uploadSuccess",
-      });
-
-      readXlsxFile(info.file.originFileObj).then((rows) => {
-        const dataShift = rows.shift() as string[];
-        const data = rows.map((row) => {
-          const obj = {};
-          row.forEach((item, index) => {
-            obj[dataShift[index]] = item;
-          });
-          return obj;
-        });
-        if (data !== undefined) {
-          setTableData(
-            data.map((info: any) => {
-              return {
-                email: info.email,
-                name: info.name || info.nome,
-                registration: String(info.registration || info.matricula),
-              };
-            })
-          );
-        }
-      });
-    } else if (info.file.status === "error") {
-      toast.error("Erro ao carregar arquivo", {
-        toastId: "uploadError",
-      });
-    }
+    });
   };
 
   const registerNewClass = () => {
@@ -127,7 +115,7 @@ const RegisterClass: NextPage = () => {
                 console.error(error);
                 return;
               }
-              
+
               toast.success(`Turma criada com sucesso!`);
               router.push(appRoutes.classes);
             });
@@ -195,26 +183,43 @@ const RegisterClass: NextPage = () => {
               />
             );
           })}
+          <p className={styles.labelForm}>Alunos</p>
+          <StudentsTable
+            students={
+              (tableData.length > 0 &&
+                tableData?.map((info) => {
+                  return {
+                    id: "none",
+                    user: info,
+                  };
+                })) ||
+              []
+            }
+            setOpenModal={setOpenModal}
+            setUserDataId={setUserDataId}
+            notEditable
+          />
           <div className={styles.xlsxDiv}>
-            <span>(Apenas arquivos xlsx)</span>
             <Button
               className={styles.xlsxButton}
               onClick={() => download("/exemplo.xlsx", "exemplo.xlsx")}
             >
               Baixar exemplo
             </Button>
-            <Upload
-              onChange={onUploadFile}
-              accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-              onRemove={() => {
-                setTableData([]);
+            <label className={styles.xlsxLabel} htmlFor="file">
+              Adicionar alunos
+            </label>
+            <input
+              type="file"
+              id="file"
+              style={{ display: "none" }}
+              name="file"
+              accept=".xlsx"
+              onChange={(e: any) => {
+                onUploadFile(e.target.files[0]);
               }}
-              maxCount={1}
-            >
-              <Button className={styles.buttonUpload} icon={<UploadOutlined />}>
-                Alunos
-              </Button>
-            </Upload>
+              />
+              <span>(Apenas arquivos xlsx)</span>
           </div>
         </div>
 
