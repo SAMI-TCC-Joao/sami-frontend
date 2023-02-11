@@ -125,6 +125,7 @@ export function IndicatorTable({
         return;
       }
       toast.success("Aplicação apagada com sucesso");
+      setIsDeleteEvaluation(null);
     });
   }
 
@@ -159,11 +160,12 @@ export function IndicatorTable({
     if (menuTypeSplitArray[1] === "evaluation") {
       switch (menuTypeSplitArray[0]) {
         case "Ver detalhes":
-          setFormId(dataId);
+          setFormId(extra.form.id);
+          setFormName(dataName);
           setEvaluationModal(extra);
           break;
         case "Agendar":
-          setFormId(dataId);
+          setFormId(extra.form.id);
           setFormName(dataName);
           setEvaluationModal({});
           break;
@@ -240,7 +242,7 @@ export function IndicatorTable({
                   menu={{
                     items: dataDropdown("evaluation"),
                     onClick: (e) =>
-                      handleMenu(e.key, "evaluation", evaluation.id, '', evaluation),
+                      handleMenu(e.key, "evaluation", evaluation.id, evaluation.form.name, evaluation),
                   }}
                 >
                   <img
@@ -259,7 +261,7 @@ export function IndicatorTable({
             trigger={["click"]}
             menu={{
               items: dataDropdown("form"),
-              onClick: (e) => handleMenu(e.key, "form", item.id, item.name),
+              onClick: (e) => handleMenu(e.key, "form", item.id, item.name, null),
             }}
           >
             <img src="/more.svg" alt="ver mais" className={styles.moreIcon} />
@@ -403,7 +405,8 @@ export function IndicatorTable({
           </span>
         )}
       </Modal>
-      <Modal
+      {isDeleteEvaluation && (
+        <Modal
         open={!!isDeleteEvaluation}
         onOk={() => deleteEvaluation(isDeleteEvaluation)}
         onCancel={() => setIsDeleteEvaluation(null)}
@@ -418,6 +421,7 @@ export function IndicatorTable({
             aplicação?
           </span>
       </Modal>
+      )}
       {evaluationModal && (
         <EvaluationModal
         evaluationData={evaluationModal}
