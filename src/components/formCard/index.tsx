@@ -137,6 +137,7 @@ export function FormCard({
       ];
 
   const onClick = (e: any) => {
+    e.stopPropagation();
     if (!e.key) {
       return;
     }
