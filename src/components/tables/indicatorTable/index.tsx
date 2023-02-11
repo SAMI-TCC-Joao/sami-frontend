@@ -55,7 +55,7 @@ export function IndicatorTable({
         break;
       case "evaluation":
       return [
-        { label: "Ver detalhes", key: "Ver detalhes-evaluation" },
+        { label: "Ver detalhes (Editar)", key: "Ver detalhes-evaluation" },
         { label: "Agendar", key: "Agendar-evaluation" },
         { label: "Excluir", key: "Excluir-evaluation", danger: true },
       ];
@@ -118,7 +118,7 @@ export function IndicatorTable({
 
   const deleteEvaluation = (evaluationId) => {
     handleDeleteEvaluation({
-      id: `${evaluationId}`,
+      refetchPathOptions: `${evaluationId}`,
     }).then(({ error }) => {
       if (error) {
         toast.error("Erro ao apagar aplicação");
@@ -158,12 +158,17 @@ export function IndicatorTable({
 
     if (menuTypeSplitArray[1] === "evaluation") {
       switch (menuTypeSplitArray[0]) {
-        case "Ver detalhes (Editar)":
+        case "Ver detalhes":
           setFormId(dataId);
           setEvaluationModal(extra);
           break;
+        case: "Agendar":
+          setFormId(dataId);
+          setFormName(dataName);
+          setEvaluationModal({});
+          break;
         case "Excluir":
-          setIsDeleteEvaluation(extra);
+          setIsDeleteEvaluation(dataId);
           break;
         default:
           toast.error("Erro inesperado");
@@ -413,7 +418,8 @@ export function IndicatorTable({
             aplicação?
           </span>
       </Modal>
-      <EvaluationModal
+      {evaluationModal && (
+        <EvaluationModal
         evaluationData={evaluationModal}
         formId={formId}
         indicatorId={id}
@@ -421,6 +427,8 @@ export function IndicatorTable({
         handleReload={handleReload}
         setEvaluationModal={setEvaluationModal}
       />
+      )}
+      
     </div>
   );
 }
