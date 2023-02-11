@@ -172,7 +172,7 @@ export function EvaluationModal({
       open={!!evaluationData}
       onOk={handleOk}
       onCancel={handleCancel}
-      okText={"Adicionar"}
+      okText={evaluationData?.id ? "Salvar" : "Adicionar"}
       cancelText="Cancelar"
       title={"Adicionar aplicação"}
       width={700}
