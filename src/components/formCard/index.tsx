@@ -234,12 +234,9 @@ export function FormCard({
   return (
     <div className={styles.container}
     onClick={() => {
-      if (isEvaluation || isTeacher) {
+      if (isEvaluation) {
         router.push(
-          appRoutes.response.replace(
-            "[index]",
-            `${id}${isTeacher ? `?teacher=true` : ``}`
-          )
+          appRoutes.response.replace("[index]",`${id}`)
         );
       }
     }}

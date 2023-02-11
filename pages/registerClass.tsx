@@ -169,7 +169,7 @@ const RegisterClass: NextPage = () => {
             const { key, type } = field;
             return (
               <InputForms
-                key={index}
+                key={`${index}`}
                 onChange={(e) => {
                   setClassData((prev) => ({
                     ...prev,
