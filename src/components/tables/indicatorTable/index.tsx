@@ -235,7 +235,7 @@ export function IndicatorTable({
                   menu={{
                     items: dataDropdown("evaluation"),
                     onClick: (e) =>
-                      handleMenu(e.key, "evaluation", evaluation.id, evaluation),
+                      handleMenu(e.key, "evaluation", evaluation.id, '', evaluation),
                   }}
                 >
                   <img
@@ -254,7 +254,7 @@ export function IndicatorTable({
             trigger={["click"]}
             menu={{
               items: dataDropdown("form"),
-              onClick: (e) => handleMenu(e.key, "form", item.id),
+              onClick: (e) => handleMenu(e.key, "form", item.id, item.name),
             }}
           >
             <img src="/more.svg" alt="ver mais" className={styles.moreIcon} />
@@ -417,6 +417,7 @@ export function IndicatorTable({
         evaluationData={evaluationModal}
         formId={formId}
         indicatorId={id}
+        formName={formName}
         handleReload={handleReload}
         setEvaluationModal={setEvaluationModal}
       />
