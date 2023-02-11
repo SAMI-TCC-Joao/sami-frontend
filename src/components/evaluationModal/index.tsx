@@ -84,11 +84,11 @@ export function EvaluationModal({
       return;
     }
 
-    const {id, ..._evaluation} = {...evaluation, shouldRepeat };
+    const { id, ..._evaluation } = evaluation;
     const func = id ? handleUpdateEvaluation : handleCreateEvaluation
     func({
       id,
-      values: _evaluation,
+      values: {..._evaluation, shouldRepeat: shouldRepeat ?? false },
     }).then(({ data, error }) => {
       if (error) {
         toast.error(`Erro ao ${id ? 'atualizar' : 'criar'} aplicação`);
