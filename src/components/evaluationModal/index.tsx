@@ -60,6 +60,7 @@ export function EvaluationModal({
       saturday: false,
       sunday: false,
     },
+    shouldRepeat: false,
   });
 
   const handleOk = () => {
@@ -81,7 +82,7 @@ export function EvaluationModal({
       return;
     }
 
-    const {id, ..._evaluation} = evaluation;
+    const {id, ..._evaluation} = {...evaluation, shouldRepeat };
     const func = id ? handleUpdateEvaluation : handleCreateEvaluation
     func({
       id,
@@ -110,6 +111,7 @@ export function EvaluationModal({
           saturday: false,
           sunday: false,
         },
+        shouldRepeat: false,
       });
       handleReload();
       setEvaluationModal(false);
@@ -136,6 +138,7 @@ export function EvaluationModal({
         saturday: false,
         sunday: false,
       },
+      shouldRepeat: false,
     });
   };
 
