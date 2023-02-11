@@ -219,14 +219,14 @@ const AllTeacher: NextPage = () => {
   return (
     <div className={styles.container}>
       <Head>
-        <title>Todos Professores - SAMI</title>
+        <title>Professores - SAMI</title>
         <meta
-          name="Todos Professores da plataforma"
+          name="Todos os professores da plataforma"
           content="Página de todos os professores da plataforma"
         />
       </Head>
       <Header />
-      <div className={styles.titleFormsAll}>Todos Professores</div>
+      <div className={styles.titleFormsAll}>Professores</div>
       <div className={styles.pageContainer}>
         <Table
           dataSource={[...dataTable]}

@@ -20,7 +20,7 @@ import { appRoutes } from "../constants";
 const formFields = [
   { title: "Nome", type: "string", key: "name" },
   { title: "Nome da disciplina", type: "string", key: "subjectName" },
-  { title: "Código da disciplina", type: "number", key: "subjectId" },
+  { title: "Código da disciplina", type: "string", key: "subjectId" },
   { title: "Semestre", type: "string", key: "semester" },
 ];
 
@@ -127,7 +127,8 @@ const RegisterClass: NextPage = () => {
                 console.error(error);
                 return;
               }
-
+              
+              toast.success(`Turma criada com sucesso!`);
               router.push(appRoutes.classes);
             });
           };

@@ -108,7 +108,7 @@ const Login: NextPage = () => {
       >
         <div className={styles.logoText}>SAMI</div>
         <div className={styles.text}>
-          Sistema para análise de métricas e <br /> indicadores de aprendizagem
+          Sistema para análise de métricas de <br /> indicadores de aprendizagem
         </div>
 
         <div className={styles.divInput}>

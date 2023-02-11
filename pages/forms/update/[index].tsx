@@ -112,7 +112,6 @@ const UpdateForm: NextPage = () => {
         }
         dispatch(formsUpdate(data));
         if (router.query?.indicator) {
-          toast.loading("Atualizando indicador...");
           router.push(
             appRoutes.oneIndicator.replace(
               "[index]",
@@ -189,7 +188,7 @@ const UpdateForm: NextPage = () => {
       </div>
       <div className={styles.footerForm}>
         <Button onClick={submit} type="primary">
-          Enviar formulário
+          Salvar formulário
         </Button>
       </div>
     </div>

@@ -151,9 +151,7 @@ const Response: NextPage = () => {
           toastId: "error-send-response",
         });
       } else {
-        toast.success("Respostas enviadas com sucesso", {
-          toastId: "success-send-response",
-        });
+        toast.success("Respostas enviadas com sucesso");
         router.push(appRoutes.home);
       }
     });
@@ -185,17 +183,22 @@ const Response: NextPage = () => {
         isTeacher={!!router.query.teacher}
       />
       <div className={styles.footerForm}>
-        <Button
-          onClick={
-            router.query.teacher
-              ? () => router.back()
-              : submit
-          }
+      <Button
+          onClick={() => router.back()}
           type="primary"
           className={styles.footerButton}
         >
-          {router.query.teacher ? "voltar" : "Responder"}
+          voltar
         </Button>
+        {!router.query.teacher && (
+          <Button
+          onClick={submit}
+          type="primary"
+          className={styles.footerButton}
+        >
+          Responder
+        </Button>
+        )}
       </div>
     </div>
   );

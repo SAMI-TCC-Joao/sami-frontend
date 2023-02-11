@@ -18,6 +18,8 @@ interface FormCardProps {
   isEvaluation?: boolean;
   isTemplate?: boolean;
   isTeacher?: boolean;
+  isAdmin?: boolean;
+  classLabel?: string;
   reloadInPage?: () => void;
 }
 
@@ -30,7 +32,9 @@ export function FormCard({
   isEvaluation,
   isTemplate,
   isTeacher,
+  isAdmin,
   reloadInPage,
+  classLabel
 }: FormCardProps) {
   const [indicators, setIndicators] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -97,10 +101,10 @@ export function FormCard({
       ]
     : isTemplate
     ? [
-        {
-          label: "Adicionar à indicador",
-          key: `${id}, add`,
-        },
+      ...(!isAdmin ? [{
+        label: "Adicionar à indicador",
+        key: `${id}, add`,
+      }] : []),
         {
           label: "Visualizar",
           key: `${appRoutes.response.replace(
@@ -121,10 +125,10 @@ export function FormCard({
           label: "Editar",
           key: `${appRoutes.updateForm.replace("[index]", id)}, edit`,
         },
-        {
+        ...(!isAdmin ? [{
           label: "Adicionar à indicador",
           key: `${id}, add`,
-        },
+        }] : []),
         {
           label: "Apagar",
           key: `${id}, delete`,
@@ -227,25 +231,31 @@ export function FormCard({
   };
 
   return (
-    <div className={styles.container}>
+    <div className={styles.container}
+    onClick={() => {
+      if (isEvaluation || isTeacher) {
+        router.push(
+          appRoutes.response.replace(
+            "[index]",
+            `${id}${isTeacher ? `?teacher=true` : ``}`
+          )
+        );
+      }
+    }}
+    >
       <div className={styles.header}>
         <div
           className={
             isEvaluation || isTeacher ? styles.titleEvaluation : styles.title
           }
-          onClick={() => {
-            if (isEvaluation || isTeacher) {
-              router.push(
-                appRoutes.response.replace(
-                  "[index]",
-                  `${id}${isTeacher ? `?teacher=true` : ``}`
-                )
-              );
-            }
-          }}
         >
           {title}
         </div>
+        {isEvaluation && classLabel && (
+          <div>
+            {classLabel}
+        </div>
+        )}
         {!isEvaluation ? (
           <Dropdown
             className={styles.dropdown}

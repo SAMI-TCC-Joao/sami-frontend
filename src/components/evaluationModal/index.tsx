@@ -1,5 +1,6 @@
-import { Modal, Checkbox, Select, DatePicker } from "antd";
+import { Modal, Checkbox, Select, DatePicker, Tooltip } from "antd";
 import { useRouter } from "next/router";
+import { InfoCircleOutlined } from "@ant-design/icons";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
@@ -7,8 +8,18 @@ import useCRUD from "../hooks/useCRUD";
 import styles from "./styles.module.css";
 import ReactTextareaAutosize from "react-textarea-autosize";
 
+const weekDays = {
+  monday: 'Seg',
+  tuesday: 'Ter',
+  wednesday: 'Qua',
+  thursday: 'Qui',
+  friday: 'Sex',
+  saturday: 'Sab',
+  sunday: 'Dom',
+}
+
 interface EvaluationModalProps {
-  open: boolean;
+  evaluationData: any;
   formId: string;
   indicatorId: string;
   handleReload: () => void;
@@ -16,7 +27,7 @@ interface EvaluationModalProps {
 }
 
 export function EvaluationModal({
-  open,
+  evaluationData,
   formId,
   indicatorId,
   handleReload,
@@ -26,9 +37,11 @@ export function EvaluationModal({
 
   const { user } = useSelector((state: any) => state);
   const { handleGet: handleGetClasses } = useCRUD({ model: "classe" });
-  const { handleCreate: handleCreateEvaluation } = useCRUD({ model: "evaluation" });
+  const { handleCreate: handleCreateEvaluation, handleUpdate: handleUpdateEvaluation } = useCRUD({ model: "evaluation" });
   const [classes, setClasses] = useState([] as any);
+  const [shouldRepeat, setShouldRepeat] = useState(false as boolean);
   const [evaluation, setEvaluation] = useState({
+    id: undefined,
     formId,
     indicatorId,
     classId: "",
@@ -47,19 +60,20 @@ export function EvaluationModal({
   });
 
   const handleOk = () => {
-    handleCreateEvaluation({
-      header: {
-        Authorization: `Bearer ${user.token}`,
-      },
-      values: evaluation,
+    const {id, ..._evaluation} = evaluation;
+    const func = id ? handleUpdateEvaluation : handleCreateEvaluation
+    func({
+      id,
+      values: _evaluation,
     }).then(({ data, error }) => {
       if (error) {
-        toast.error("Erro ao criar aplicação");
+        toast.error(`Erro ao ${id ? 'atualizar' : 'criar'} aplicação`);
         return;
       }
 
-      toast.success("Aplicação criada com sucesso");
+      toast.success(`Aplicação ${id ? 'atualizada' : 'criada'} criada com sucesso`);
       setEvaluation({
+        id: undefined,
         formId: "",
         indicatorId: "",
         classId: "",
@@ -84,6 +98,7 @@ export function EvaluationModal({
   const handleCancel = () => {
     setEvaluationModal(false);
     setEvaluation({
+      id: undefined,
       formId: "",
       indicatorId: "",
       classId: "",
@@ -103,7 +118,7 @@ export function EvaluationModal({
   };
 
   useEffect(() => {
-    if (!router.isReady || !open) return;
+    if (!router.isReady || !evaluationData) return;
     handleGetClasses({
       header: {
         Authorization: `Bearer ${user.token}`,
@@ -118,15 +133,16 @@ export function EvaluationModal({
 
       setEvaluation({
         ...evaluation,
+        ...evaluationData,
         formId,
         indicatorId,
       });
     });
-  }, [open]);
+  }, [evaluationData]);
 
   return (
     <Modal
-      open={open}
+      open={!!evaluationData}
       onOk={handleOk}
       onCancel={handleCancel}
       okText={"Adicionar"}
@@ -189,113 +205,41 @@ export function EvaluationModal({
         />
       </div>
       <div className={styles.weekDiv}>
-        <span className={styles.title}>Repetir: </span>
+        <div className={styles.weekTitleDiv}>
+        <span className={styles.title}>
+          Repetir
+        </span>
+        <Checkbox
+              checked={shouldRepeat}
+              onChange={(e) =>
+                setShouldRepeat( e.target.checked)
+              }
+            />
+            <Tooltip title="Ao ativar essa opção, a aplicação irá verificar apenas os dias da semana marcados abaixo e irá ignorar as datas de início e fim selecionadas">
+            <InfoCircleOutlined />
+            </Tooltip>
+        </div>
+        
         <div className={styles.checkboxContainer}>
-          <div className={styles.checkboxDiv}>
-            <span>Seg</span>
+          {Object.entries(weekDays).map(([key,value]) => (
+            <div className={styles.checkboxDiv} key={`div-weekday-${key}`}>
+            <span>{value}</span>
             <Checkbox
-              checked={evaluation.repeat.monday}
+              key={`checkbox-weekday-${key}`}
+              checked={evaluation.repeat[key]}
+              disabled={!shouldRepeat}
               onChange={(e) =>
                 setEvaluation({
                   ...evaluation,
                   repeat: {
                     ...evaluation.repeat,
-                    monday: e.target.checked,
+                    [key]: e.target.checked,
                   },
                 })
               }
             />
           </div>
-          <div className={styles.checkboxDiv}>
-            <span>Ter</span>
-            <Checkbox
-              checked={evaluation.repeat.tuesday}
-              onChange={(e) =>
-                setEvaluation({
-                  ...evaluation,
-                  repeat: {
-                    ...evaluation.repeat,
-                    tuesday: e.target.checked,
-                  },
-                })
-              }
-            />
-          </div>
-          <div className={styles.checkboxDiv}>
-            <span>Qua</span>
-            <Checkbox
-              checked={evaluation.repeat.wednesday}
-              onChange={(e) =>
-                setEvaluation({
-                  ...evaluation,
-                  repeat: {
-                    ...evaluation.repeat,
-                    wednesday: e.target.checked,
-                  },
-                })
-              }
-            />
-          </div>
-          <div className={styles.checkboxDiv}>
-            <span>Qui</span>
-            <Checkbox
-              checked={evaluation.repeat.thursday}
-              onChange={(e) =>
-                setEvaluation({
-                  ...evaluation,
-                  repeat: {
-                    ...evaluation.repeat,
-                    thursday: e.target.checked,
-                  },
-                })
-              }
-            />
-          </div>
-          <div className={styles.checkboxDiv}>
-            <span>Sex</span>
-            <Checkbox
-              checked={evaluation.repeat.friday}
-              onChange={(e) =>
-                setEvaluation({
-                  ...evaluation,
-                  repeat: {
-                    ...evaluation.repeat,
-                    friday: e.target.checked,
-                  },
-                })
-              }
-            />
-          </div>
-          <div className={styles.checkboxDiv}>
-            <span>Sab</span>
-            <Checkbox
-              checked={evaluation.repeat.saturday}
-              onChange={(e) =>
-                setEvaluation({
-                  ...evaluation,
-                  repeat: {
-                    ...evaluation.repeat,
-                    saturday: e.target.checked,
-                  },
-                })
-              }
-            />
-          </div>
-          <div className={styles.checkboxDiv}>
-            <span>Dom</span>
-            <Checkbox
-              checked={evaluation.repeat.sunday}
-              onChange={(e) =>
-                setEvaluation({
-                  ...evaluation,
-                  repeat: {
-                    ...evaluation.repeat,
-                    sunday: e.target.checked,
-                  },
-                })
-              }
-            />
-          </div>
+          ))}
         </div>
       </div>
     </Modal>

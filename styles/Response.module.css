@@ -39,7 +39,7 @@
 .footerForm {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
   width: 100%;
   padding: 1rem 5.6rem;
 }

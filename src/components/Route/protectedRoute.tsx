@@ -93,8 +93,8 @@ const ProtectedRoute = ({ router, children }: any) => {
         backendStart(),
         {
           pending: "Validando informações...",
-          success: "Projeto iniciado com sucesso",
-          error: "Erro ao iniciar projeto",
+          success: "Informações validadas",
+          error: "Erro ao validar informações",
         },
         {
           toastId: "backendStart",

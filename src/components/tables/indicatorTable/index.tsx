@@ -28,13 +28,15 @@ export function IndicatorTable({
   const [informationModal, setInformationModal] = useState("");
   const [deleteModal, setDeleteModal] = useState(false);
   const [formId, setFormId] = useState("");
-  const [evaluationModal, setEvaluationModal] = useState(false);
+  const [isDeleteEvaluation, setIsDeleteEvaluation] = useState("" as any);
+  const [evaluationModal, setEvaluationModal] = useState(null as any);
 
   const { forms, user } = useSelector((state: any) => state);
   const { handleGet: handleGetForms } = useCRUD({ model: "form" });
   const { handleCreate: handleCreateIndicator } = useCRUD({
     model: "indicator",
   });
+  const { handleDelete: handleDeleteEvaluation } = useCRUD({ model: "evaluation" });
 
   const { handleGet: handleGetIndicator } = useCRUD({
     model: "indicator/one",
@@ -42,18 +44,24 @@ export function IndicatorTable({
   const { handleDelete: handleDeleteForm } = useCRUD({ model: "form" });
 
   const dataDropdown = (type: string) => {
-    if (type === "form") {
+    switch(type){
+      case "form":
+        return [
+          { label: "Ver detalhes (editar)", key: "Ver detalhes-form" },
+          { label: "Aplicar", key: "Reaplicar-form" },
+          { label: "Excluir", key: "Excluir-form", danger: true },
+        ];
+        break;
+      case "evaluation":
       return [
-        { label: "Ver detalhes (editar)", key: "Ver detalhes-form" },
-        { label: "Aplicar", key: "Reaplicar-form" },
-        { label: "Excluir", key: "Excluir-form", danger: true },
+        { label: "Ver detalhes", key: "Ver detalhes-evaluation" },
+        { label: "Agendar", key: "Agendar-evaluation" },
+        { label: "Excluir", key: "Excluir-evaluation", danger: true },
       ];
+      default: return [];
     }
-    return [
-      { label: "Ver detalhes", key: "Ver detalhes-evaluation" },
-      { label: "Agendar", key: "Agendar-evaluation" },
-      { label: "Excluir", key: "Excluir-evaluation", danger: true },
-    ];
+
+
   };
 
   const dropdownData = (type: string) => {
@@ -107,6 +115,18 @@ export function IndicatorTable({
     });
   };
 
+  const deleteEvaluation = (evaluationId) => {
+    handleDeleteEvaluation({
+      id: `${evaluationId}`,
+    }).then(({ error }) => {
+      if (error) {
+        toast.error("Erro ao apagar aplicação");
+        return;
+      }
+      toast.success("Aplicação apagada com sucesso");
+    });
+  }
+
   const handleFormsFunction = () => {
     handleGetForms({
       header: {
@@ -121,11 +141,7 @@ export function IndicatorTable({
     });
   };
 
-  const handleMenu = (menuType: string, option: string, dataId: string) => {
-    if (option === "evaluation-add") {
-      return () => console.log(menuType);
-    }
-
+  const handleMenu = (menuType: string, option: string, dataId: string, extra: any) => {
     if (option === "form-add") {
       setIsModalOpen(true);
       setInformationModal(menuType);
@@ -135,14 +151,13 @@ export function IndicatorTable({
 
     if (menuTypeSplitArray[1] === "evaluation") {
       switch (menuTypeSplitArray[0]) {
-        case "Ver detalhes":
-          toast.warn("Em breve");
-          break;
-        case "Agendar":
-          toast.warn("Em breve");
+        case "Ver detalhes (Editar)":
+          setFormId(dataId);
+          setEvaluationModal(extra);
           break;
         case "Excluir":
           toast.warn("Em breve");
+          deleteEvaluation
           break;
         default:
           toast.error("Erro inesperado");
@@ -159,7 +174,7 @@ export function IndicatorTable({
           break;
         case "Reaplicar":
           setFormId(dataId);
-          setEvaluationModal(true);
+          setEvaluationModal({});
           break;
         case "Excluir":
           setFormId(dataId);
@@ -187,7 +202,7 @@ export function IndicatorTable({
                 className={styles.addLayer}
                 onClick={() => {
                   setFormId(item.id);
-                  setEvaluationModal(true);
+                  setEvaluationModal({});
                 }}
               />
             </Tooltip>
@@ -202,11 +217,25 @@ export function IndicatorTable({
               date: new Date(evaluation.createdAt).toLocaleDateString(),
               views: evaluation.responses,
               status:
-                new Date(evaluation.finalDate) > new Date()
+                new Date(evaluation.finalDate) > new Date() || evaluation.shouldRepeat
                   ? "Em andamento"
                   : "Finalizado",
               actions: (
-                <div/>
+                <Dropdown
+                  arrow
+                  trigger={["click"]}
+                  menu={{
+                    items: dataDropdown("evaluation"),
+                    onClick: (e) =>
+                      handleMenu(e.key, "evaluation", evaluation.id, evaluation),
+                  }}
+                >
+                  <img
+                    src="/more.svg"
+                    alt="ver mais"
+                    className={styles.moreIcon}
+                  />
+                </Dropdown>
               ),
             };
           }),
@@ -361,8 +390,23 @@ export function IndicatorTable({
           </span>
         )}
       </Modal>
+      <Modal
+        open={!!isDeleteEvaluation}
+        onOk={() => deleteEvaluation(isDeleteEvaluation)}
+        onCancel={() => setIsDeleteEvaluation(null)}
+        okText="Apagar"
+        cancelText="Cancelar"
+        title="Apagar aplicação"
+        width={700}
+        bodyStyle={{ padding: "0 1.2rem 1rem 1.2rem" }}
+      >
+        <span>
+            Essa ação não pode ser desfeita. Tem certeza que deseja apagar essa
+            aplicação?
+          </span>
+      </Modal>
       <EvaluationModal
-        open={evaluationModal}
+        evaluationData={evaluationModal}
         formId={formId}
         indicatorId={id}
         handleReload={handleReload}

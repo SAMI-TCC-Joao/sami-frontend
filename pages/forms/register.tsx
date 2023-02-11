@@ -135,7 +135,7 @@ const RegisterForm: NextPage = () => {
       </div>
       <div className={styles.footerForm}>
         <Button onClick={submit} type="primary">
-          Enviar formulário
+          Salvar formulário
         </Button>
       </div>
     </div>

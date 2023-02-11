@@ -46,6 +46,7 @@ const Home: NextPage = () => {
               title={form.name}
               date={`${new Date(form.createdAt).toLocaleDateString()}`}
               isTeacher
+              isAdmin={user?.userType === "admin"}
             />
           ))
         : "Nenhum cadastrado",
@@ -62,6 +63,7 @@ const Home: NextPage = () => {
               date={`${new Date(form.createdAt).toLocaleDateString()}`}
               isTemplate
               isTeacher
+              isAdmin={user?.userType === "admin"}
             />
           ))
         : "Nenhum cadastrado",
@@ -84,15 +86,7 @@ const Home: NextPage = () => {
             toastId: "error",
           });
         }
-        const evaluationData = data.filter((evaluation: any) => {
-          if (
-            dayjs().isBetween(evaluation.initialDate, evaluation.finalDate) &&
-            evaluation.repeat[dayjs().format("dddd").toLowerCase()]
-          ) {
-            return evaluation;
-          }
-        });
-        setEvaluations(evaluationData);
+        setEvaluations(data);
       });
     }
   }, []);
@@ -128,6 +122,7 @@ const Home: NextPage = () => {
                     new Date(evaluation?.finalDate).toLocaleDateString(),
                   ]}
                   isEvaluation
+                  classLabel={evaluation.class.name}
                 />
               ))
             ) : (

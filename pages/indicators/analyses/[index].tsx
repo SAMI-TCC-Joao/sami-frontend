@@ -454,7 +454,7 @@ const AnalysesIndicator: NextPage = () => {
                       <option
                         key={classItem.id}
                         value={classItem.id}
-                        title={classItem.name}
+                        title={`${classItem.name} - ${classItem.semester}`}
                       >
                         {classItem.name}
                       </option>

@@ -8,7 +8,7 @@ import type {
 } from "antd/es/table";
 import type { FilterValue, SorterResult } from "antd/es/table/interface";
 import type { FilterConfirmProps } from "antd/es/table/interface";
-import React, { Dispatch, useEffect, useRef, useState } from "react";
+import React, { Dispatch, useEffect, useMemo, useRef, useState } from "react";
 import Highlighter from "react-highlight-words";
 import { useSelector } from "react-redux";
 import MoreInfosTable from "../../dropdown/moreInfosTable";
@@ -52,12 +52,6 @@ const ClassesTable = () => {
       current: 1,
       pageSize: 10,
     },
-  });
-
-  const getRandomuserParams = (params: TableParams) => ({
-    results: params.pagination?.pageSize,
-    page: params.pagination?.current,
-    ...params,
   });
 
   const searchInput = useRef<InputRef>(null);
@@ -213,7 +207,7 @@ const ClassesTable = () => {
       ),
   });
 
-  const columns: ColumnsType<DataType> = [
+  const columns: ColumnsType<DataType> = useMemo(() => ([
     {
       title: "Disciplina",
       dataIndex: "discipline",
@@ -273,7 +267,7 @@ const ClassesTable = () => {
       align: "center",
       width: 10,
     },
-  ];
+  ]), [classTableData]);
 
   return (
     <>
