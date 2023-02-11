@@ -156,11 +156,7 @@ export function IndicatorTable({
     }
 
     const menuTypeSplitArray = menuType.split("-");
-    console.log(menuType,
-      option,
-      dataId,
-      dataName,
-      extra);
+
     if (menuTypeSplitArray[1] === "evaluation") {
       switch (menuTypeSplitArray[0]) {
         case "Ver detalhes":

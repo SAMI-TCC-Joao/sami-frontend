@@ -236,7 +236,7 @@ export function EvaluationModal({
               finalDate: new Date(`${value?.[1]}`).toISOString(),
             })
           }
-          value={evaluation?.id ? [dayjs(evaluation.initialDate), dayjs(evaluation.finalDate)] : null}
+          value={[evaluation.initialDate?.length ? dayjs(evaluation.initialDate) : null, evaluation.finalDate?.length ? dayjs(evaluation.finalDate) : null]}
           placeholder={["Escolha a data inicial", "Escolha a data final"]}
           className={
             firstVerify && !evaluation.initialDate && !evaluation.finalDate
