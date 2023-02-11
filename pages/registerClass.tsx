@@ -98,6 +98,7 @@ const RegisterClass: NextPage = () => {
         toast.error("Erro ao criar turma", {
           toastId: "createClass",
         });
+        return;
       }
 
       for (let i = 0; i < tableData.length; i++) {
@@ -116,7 +117,6 @@ const RegisterClass: NextPage = () => {
                 return;
               }
 
-              toast.success(`Turma criada com sucesso!`);
               router.push(appRoutes.classes);
             });
           };
@@ -149,6 +149,7 @@ const RegisterClass: NextPage = () => {
           return;
         });
       }
+      toast.success(`Turma criada com sucesso!`);
     });
   };
 
