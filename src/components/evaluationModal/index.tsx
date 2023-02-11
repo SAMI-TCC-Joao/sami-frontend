@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import useCRUD from "../hooks/useCRUD";
 import styles from "./styles.module.css";
 import ReactTextareaAutosize from "react-textarea-autosize";
+import dayjs from "dayjs";
 
 const weekDays = {
   monday: 'Seg',
@@ -42,7 +43,7 @@ export function EvaluationModal({
   const { handleCreate: handleCreateEvaluation, handleUpdate: handleUpdateEvaluation } = useCRUD({ model: "evaluation" });
   const [firstVerify, setFirstVerify] = useState(false);
   const [classes, setClasses] = useState([] as any);
-  const [shouldRepeat, setShouldRepeat] = useState(false as boolean);
+  const [shouldRepeat, setShouldRepeat] = useState(evaluationData.shouldRepeat as boolean);
   const [evaluation, setEvaluation] = useState({
     id: undefined,
     formId,
@@ -60,6 +61,7 @@ export function EvaluationModal({
       saturday: false,
       sunday: false,
     },
+    ...evaluationData,
     shouldRepeat: false,
   });
 
@@ -234,6 +236,7 @@ export function EvaluationModal({
               finalDate: new Date(`${value?.[1]}`).toISOString(),
             })
           }
+          value={evaluation?.id ? [dayjs(evaluation.initialDate), dayjs(evaluation.finalDate)] : null}
           placeholder={["Escolha a data inicial", "Escolha a data final"]}
           className={
             firstVerify && !evaluation.initialDate && !evaluation.finalDate
